@@ -2,8 +2,8 @@
 
 // qwfy/rust/video_thumb/data/@魏老板私服_2024-02-26_07-14-44_025.mp4
 
+// 引入必要的库
 use std::process::Command;
-
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -26,7 +26,6 @@ fn generate_thumbnails(file_path: &str, output_pattern: &str) -> Result<(), Stri
     }
 }
 
-
 fn ensure_directory_exists(path: &str) -> Result<(), std::io::Error> {
     let path = Path::new(path);
     if !path.exists() {
@@ -34,7 +33,6 @@ fn ensure_directory_exists(path: &str) -> Result<(), std::io::Error> {
     }
     Ok(())
 }
-
 
 fn rename_files(input_dir: &str, video_filename: &str) -> std::io::Result<()> {
     let dir = Path::new(input_dir);
@@ -44,9 +42,10 @@ fn rename_files(input_dir: &str, video_filename: &str) -> std::io::Result<()> {
             let path = entry.path();
             if path.is_file() {
                 let filename = path.file_name().unwrap().to_str().unwrap();
-                // 假设文件名遵循 "output_001.jpg" 的格式
-                if let Some(capture) = filename.strip_prefix("output_").and_then(|f| f.strip_suffix(".jpg")) {
-                    let frame_number = capture.parse::<i32>().unwrap();
+                // 直接处理 "@魏老板私服_2024-02-26_07-14-44_025_001.jpg" 格式的文件名
+                if let Some(capture) = filename.strip_prefix(video_filename).and_then(|f| f.strip_suffix(".jpg")) {
+                    let frame_number_str = capture.trim_start_matches('_');
+                    let frame_number = frame_number_str.parse::<i32>().unwrap();
                     // 将帧号转换为时间，这里假设每15帧为一秒
                     let seconds = frame_number * 15;
                     let new_filename = format!("{}_{}.jpg", video_filename, seconds_to_timestamp(seconds));
@@ -59,31 +58,31 @@ fn rename_files(input_dir: &str, video_filename: &str) -> std::io::Result<()> {
     Ok(())
 }
 
-// 将秒转换为 "00:00:10" 格式的时间戳
 fn seconds_to_timestamp(seconds: i32) -> String {
-    format!("{:02}.{:02}.{:02}", seconds / 3600, (seconds % 3600) / 60, seconds % 60)
+    format!("{:02}_{:02}_{:02}", seconds / 3600, (seconds % 3600) / 60, seconds % 60)
 }
 
-
 fn main() {
-    let input_video_path = "./data/@魏老板私服_2024-02-26_07-14-44_025.mp4";
-    let output_pattern = "./data/@魏老板私服_2024-02-26_07-14-44_025/thumbnails/output_%03d.jpg";
+    let base_path = "./data";
+    let video_name = "@魏老板私服_2024-02-26_07-14-44_025";
+    let input_video_path = format!("{}/{}.mp4", base_path, video_name);
+    let output_dir = format!("{}/{}_thumb", base_path, video_name);
+    let output_pattern = format!("{}/{}_thumb/{}_%03d.jpg", base_path, video_name, video_name);
 
-    let output_dir = "./data/@魏老板私服_2024-02-26_07-14-44_025/thumbnails";
-    match ensure_directory_exists(output_dir) {
-        Ok(_) => println!("Output directory is ready."),
-        Err(e) => eprintln!("Error creating output directory: {}", e),
+    if let Err(e) = ensure_directory_exists(&output_dir) {
+        eprintln!("Error creating output directory: {}", e);
+        return;
     }
 
-    match generate_thumbnails(input_video_path, output_pattern) {
-        Ok(_) => println!("Thumbnails generated successfully"),
-        Err(e) => eprintln!("Error: {}", e),
+    if let Err(e) = generate_thumbnails(&input_video_path, &output_pattern) {
+        eprintln!("Error generating thumbnails: {}", e);
+        return;
     }
 
-    let input_dir = "./data/@魏老板私服_2024-02-26_07-14-44_025/thumbnails";
-    let video_filename = "@魏老板私服_2024-02-26_07-14-44_025";
-    match rename_files(input_dir, video_filename) {
-        Ok(_) => println!("Files renamed successfully"),
-        Err(e) => eprintln!("Error renaming files: {}", e),
+    if let Err(e) = rename_files(&output_dir, video_name) {
+        eprintln!("Error renaming files: {}", e);
+        return;
     }
+
+    println!("All operations completed successfully");
 }
