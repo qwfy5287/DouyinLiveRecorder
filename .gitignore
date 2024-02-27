@@ -162,3 +162,4 @@ cython_debug/
 .DS_Store
 /backup_config
 /qwfy/rust/video_splitter/data
+/qwfy/rust/video_thumb/data
