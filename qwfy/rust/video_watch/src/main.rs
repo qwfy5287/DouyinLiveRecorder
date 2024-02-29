@@ -138,7 +138,7 @@ fn watch_directory(path: &str) -> NotifyResult<()> {
     // 在监听之前重命名现有文件
     rename_existing_files(Path::new(path));
     // 生成缩略图
-    process_videos(path);
+    // process_videos(path);
 
     let mut watcher = recommended_watcher(move |res: NotifyResult<Event>| {
         match res {
@@ -159,7 +159,7 @@ fn watch_directory(path: &str) -> NotifyResult<()> {
                         match change_filename_based_on_creation_time(&path) {
                             Ok(new_path) => {
                                 // 文件可能已被重命名，`new_path` 是当前文件的路径
-                                process_video(&new_path); // 确保 `process_video` 接受 `&PathBuf` 或类似的参数
+                                // process_video(&new_path); // 确保 `process_video` 接受 `&PathBuf` 或类似的参数
                             },
                             Err(e) => eprintln!("Error changing filename: {}", e),
                         }
