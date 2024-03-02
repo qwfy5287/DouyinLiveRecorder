@@ -62,27 +62,45 @@ fn seconds_to_timestamp(seconds: i32) -> String {
     format!("{:02}_{:02}_{:02}", seconds / 3600, (seconds % 3600) / 60, seconds % 60)
 }
 
-fn main() {
-    let base_path = "./data";
-    let video_name = "@魏老板私服_2024-02-26_07-14-44_025";
-    let input_video_path = format!("{}/{}.mp4", base_path, video_name);
-    let output_dir = format!("{}/{}_thumb", base_path, video_name);
-    let output_pattern = format!("{}/{}_thumb/{}_%03d.jpg", base_path, video_name, video_name);
+fn process_videos(base_path: &str) {
+  let video_ext = "mp4"; // 定义视频文件的扩展名
 
-    if let Err(e) = ensure_directory_exists(&output_dir) {
-        eprintln!("Error creating output directory: {}", e);
-        return;
-    }
+  match fs::read_dir(base_path) {
+    Ok(entries) => {
+      for entry in entries.filter_map(Result::ok) {
+        let path = entry.path();
+        if path.is_file() && path.extension().unwrap_or_default() == video_ext {
+          let video_name = path.file_stem().unwrap_or_default().to_string_lossy();
+          let input_video_path = path.to_string_lossy().into_owned();
+          let output_dir = format!("{}/{}_thumb", base_path, video_name);
+          let output_pattern = format!("{}/{}_thumb/{}_%03d.jpg", base_path, video_name, video_name);
 
-    if let Err(e) = generate_thumbnails(&input_video_path, &output_pattern) {
-        eprintln!("Error generating thumbnails: {}", e);
-        return;
-    }
+          if let Err(e) = ensure_directory_exists(&output_dir) {
+            eprintln!("Error creating output directory for '{}': {}", video_name, e);
+            continue;
+          }
 
-    if let Err(e) = rename_files(&output_dir, video_name) {
-        eprintln!("Error renaming files: {}", e);
-        return;
-    }
+          if let Err(e) = generate_thumbnails(&input_video_path, &output_pattern) {
+            eprintln!("Error generating thumbnails for '{}': {}", video_name, e);
+            continue;
+          }
 
-    println!("All operations completed successfully");
+          if let Err(e) = rename_files(&output_dir, &video_name) {
+            eprintln!("Error renaming files for '{}': {}", video_name, e);
+            continue;
+          }
+
+          println!("Thumbnails generated successfully for '{}'", video_name);
+        }
+      }
+    },
+    Err(e) => eprintln!("Failed to read directory '{}': {}", base_path, e),
+  }
 }
+
+fn main() {
+  let base_path = "./data";
+  process_videos(base_path);
+}
+
+
