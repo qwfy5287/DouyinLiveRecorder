@@ -6,6 +6,8 @@ use std::fs::{self};
 use std::path::{Path, PathBuf};
 use std::time::UNIX_EPOCH;
 
+use crate::common::thumb::process_video;
+
 pub fn change_filename_based_on_creation_time(
     file_path: &PathBuf,
 ) -> Result<PathBuf, Box<dyn Error>> {
@@ -47,6 +49,8 @@ pub fn change_filename_based_on_creation_time(
                 if new_path != *file_path {
                     fs::rename(file_path, &new_path)?;
                     println!("File renamed to {:?}", new_path);
+                    // 生成 .jpg 缩略图
+                    // process_video(&new_path);
                     return Ok(new_path);
                 }
             }
@@ -55,19 +59,6 @@ pub fn change_filename_based_on_creation_time(
     // 如果没有更改，返回原始路径
     Ok(file_path.clone())
 }
-
-// // 重命名目录下现有的所有文件
-// pub fn rename_existing_files(path: &Path) {
-//     if let Ok(entries) = fs::read_dir(path) {
-//         for entry in entries.filter_map(|e| e.ok()) {
-//             let path = entry.path();
-//             if path.is_file() {
-//                 // 确保是文件
-//                 change_filename_based_on_creation_time(&path);
-//             }
-//         }
-//     }
-// }
 
 /// 重命名目录下现有的所有文件
 pub fn rename_existing_files(path: &Path) -> Result<(), Box<dyn Error>> {
