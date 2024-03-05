@@ -7,23 +7,53 @@ use std::io::{self, BufRead};
 use std::path::Path;
 use std::{error::Error, thread, time::Duration};
 
-// 循环
 fn main() -> Result<(), Box<dyn Error>> {
-    let browser = Browser::default()?;
+    let mut browser = Browser::default()?;
     let urls = read_urls_from_file("./config/user_list.ini")?;
 
     loop {
-        // 对每个URL执行操作
         for url in &urls {
-            let tab = browser.new_tab()?;
-            navigate_and_extract(&tab, url)?;
+            let tab_result = browser.new_tab();
+
+            match tab_result {
+                Ok(tab) => {
+                    let extract_result = navigate_and_extract(&tab, url);
+                    if extract_result.is_err() {
+                        // Handle error, log it, or decide to break/continue
+                        println!("Error navigating to URL: {}", url);
+                    }
+                    // Ensure to close or release the tab resource here if applicable
+                }
+                Err(e) => {
+                    println!("Failed to open new tab: {}", e);
+                    // Consider re-initializing the browser if necessary
+                    browser = Browser::default()?;
+                }
+            }
         }
 
         println!("等待20秒后继续处理下一轮URLs");
-        // 完成一轮处理所有URLs后，等待20秒
-        thread::sleep(Duration::from_secs(20));
+        thread::sleep(Duration::from_secs(60));
     }
 }
+
+// // 循环
+// fn main() -> Result<(), Box<dyn Error>> {
+//     let browser = Browser::default()?;
+//     let urls = read_urls_from_file("./config/user_list.ini")?;
+
+//     loop {
+//         // 对每个URL执行操作
+//         for url in &urls {
+//             let tab = browser.new_tab()?;
+//             navigate_and_extract(&tab, url)?;
+//         }
+
+//         println!("等待20秒后继续处理下一轮URLs");
+//         // 完成一轮处理所有URLs后，等待20秒
+//         thread::sleep(Duration::from_secs(20));
+//     }
+// }
 
 // 单次
 // fn main() -> Result<(), Box<dyn Error>> {
