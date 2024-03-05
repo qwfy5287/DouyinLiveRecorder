@@ -1,176 +1,122 @@
-// qwfy/rust/video_monitor/src/main.rs
+use headless_chrome::{Browser, Tab};
+use serde_json::Value;
+use std::fs::File;
+use std::fs::{self, OpenOptions};
+use std::io::Write;
+use std::io::{self, BufRead};
+use std::path::Path;
+use std::{error::Error, thread, time::Duration};
 
-// use std::error::Error;
-
-// use headless_chrome::protocol::cdp::Page;
-// use headless_chrome::Browser;
-
-// fn browse_wikipedia() -> Result<(), Box<dyn Error>> {
-//     let browser = Browser::default()?;
-
-//     let tab = browser.new_tab()?;
-
-//     /// Navigate to wikipedia
-//     tab.navigate_to("https://www.wikipedia.org")?;
-
-//     /// Wait for network/javascript/dom to make the search-box available
-//     /// and click it.
-//     tab.wait_for_element("input#searchInput")?.click()?;
-
-//     /// Type in a query and press `Enter`
-//     tab.type_str("WebKit")?.press_key("Enter")?;
-
-//     /// We should end up on the WebKit-page once navigated
-//     let elem = tab.wait_for_element("#firstHeading")?;
-//     assert!(tab.get_url().ends_with("WebKit"));
-
-//     /// Take a screenshot of the entire browser window
-//     let _jpeg_data =
-//         tab.capture_screenshot(Page::CaptureScreenshotFormatOption::Jpeg, None, None, true)?;
-
-//     /// Take a screenshot of just the WebKit-Infobox
-//     let _png_data = tab
-//         .wait_for_element("#mw-content-text > div > table.infobox.vevent")?
-//         .capture_screenshot(Page::CaptureScreenshotFormatOption::Png)?;
-
-//     // Run JavaScript in the page
-//     let remote_object = elem.call_js_fn(
-//         r#"
-//         function getIdTwice () {
-//             // `this` is always the element that you called `call_js_fn` on
-//             const id = this.id;
-//             return id + id;
-//         }
-//     "#,
-//         vec![],
-//         false,
-//     )?;
-//     match remote_object.value {
-//         Some(returned_string) => {
-//             dbg!(&returned_string);
-//             assert_eq!(returned_string, "firstHeadingfirstHeading".to_string());
-//         }
-//         _ => unreachable!(),
-//     };
-
-//     Ok(())
-// }
-
-// fn main() {
-//     browse_wikipedia().expect("REASON")
-// }
-
-// use headless_chrome::{protocol::page::methods::CaptureScreenshotFormat, Browser};
-// use std::error::Error;
-
-// fn screenshot_baidu() -> Result<(), Box<dyn Error>> {
-//     let browser = Browser::default()?;
-//     let tab = browser.new_tab()?;
-
-//     // 导航到百度首页
-//     tab.navigate_to("https://www.baidu.com")?;
-//     // 等待页面加载完毕，这里简单使用固定时间等待，实际应用中可能需要更精细的控制
-//     std::thread::sleep(std::time::Duration::from_secs(5));
-
-//     // 捕获屏幕截图，这里假设保存为PNG格式
-//     let screenshot_data = tab.capture_screenshot(CaptureScreenshotFormat::PNG, None, None, true)?;
-
-//     // 保存截图到文件
-//     std::fs::write("baidu_screenshot.png", screenshot_data)?;
-
-//     Ok(())
-// }
-
-// fn main() {
-//     if let Err(e) = screenshot_baidu() {
-//         eprintln!("Error taking screenshot of Baidu: {:?}", e);
-//     } else {
-//         println!("Screenshot saved as baidu_screenshot.png");
-//     }
-// }
-
-// use headless_chrome::{protocol::cdp::Page, Browser};
-// use std::error::Error;
-
-// fn main() -> Result<(), Box<dyn Error>> {
-//     // 创建浏览器实例
-//     let browser = Browser::default()?;
-
-//     // 创建一个新的浏览器标签页
-//     let tab = browser.new_tab()?;
-
-//     // 导航到 "https://www.baidu.com"
-//     // tab.navigate_to("https://www.baidu.com")?;
-//     // tab.navigate_to(
-//     //     "https://www.douyin.com/search/%E9%AD%8F%E8%80%81%E6%9D%BF?source=switch_tab&type=live",
-//     // )?;
-
-//     // tab.navigate_to("https://www.douyin.com/search/65181878010?source=switch_tab&type=user")?;
-//     // tab.navigate_to("https://live.douyin.com/599952912242")?;
-//     tab.navigate_to("https://www.douyin.com/user/MS4wLjABAAAAF-Ne-5HXXXmdzAGhuZygBQUpDTK3IbEHJfFYPAhVfRfyihhVB2sz0vYO0aofyGnP")?;
-
-//     // 等待页面加载完成
-//     tab.wait_until_navigated()?;
-
-//     // 等待页面加载完毕，这里简单使用固定时间等待，实际应用中可能需要更精细的控制
-//     std::thread::sleep(std::time::Duration::from_secs(5));
-
-//     // 捕获整个页面的屏幕截图
-//     let screenshot_data = tab.capture_screenshot(
-//         Page::CaptureScreenshotFormatOption::Png, // 截图格式为 PNG
-//         None,                                     // 使用默认视图宽度
-//         None,                                     // 使用默认视图高度
-//         true,                                     // 从设备的像素比例中捕获
-//     )?;
-
-//     // 保存屏幕截图到文件
-//     std::fs::write("dy.png", screenshot_data)?;
-
-//     println!("Screenshot saved as 'dy.png'");
-
-//     Ok(())
-// }
-//
-//
-
-use headless_chrome::{protocol::cdp::Page, Browser};
-use std::error::Error;
-
+// 循环
 fn main() -> Result<(), Box<dyn Error>> {
-    // 创建浏览器实例
     let browser = Browser::default()?;
+    let urls = read_urls_from_file("./config/user_list.ini")?;
 
-    // 创建一个新的浏览器标签页
-    let tab = browser.new_tab()?;
+    loop {
+        // 对每个URL执行操作
+        for url in &urls {
+            let tab = browser.new_tab()?;
+            navigate_and_extract(&tab, url)?;
+        }
 
-    // 导航到 "https://www.baidu.com"
-    // tab.navigate_to("https://www.baidu.com")?;
-    // tab.navigate_to(
-    //     "https://www.douyin.com/search/%E9%AD%8F%E8%80%81%E6%9D%BF?source=switch_tab&type=live",
-    // )?;
+        println!("等待20秒后继续处理下一轮URLs");
+        // 完成一轮处理所有URLs后，等待20秒
+        thread::sleep(Duration::from_secs(20));
+    }
+}
 
-    // tab.navigate_to("https://www.douyin.com/search/65181878010?source=switch_tab&type=user")?;
-    // tab.navigate_to("https://live.douyin.com/599952912242")?;
-    tab.navigate_to("https://www.douyin.com/user/MS4wLjABAAAAF-Ne-5HXXXmdzAGhuZygBQUpDTK3IbEHJfFYPAhVfRfyihhVB2sz0vYO0aofyGnP")?;
+// 单次
+// fn main() -> Result<(), Box<dyn Error>> {
+//     let browser = Browser::default()?;
 
-    // 等待页面加载完成
-    tab.wait_until_navigated()?;
+//     let urls = read_urls_from_file("./config/user_list.ini")?;
 
-    // 等待页面加载完毕，这里简单使用固定时间等待，实际应用中可能需要更精细的控制
-    std::thread::sleep(std::time::Duration::from_secs(5));
+//     for url in urls {
+//         let tab = browser.new_tab()?;
+//         navigate_and_extract(&tab, &url)?;
+//     }
 
-    // 捕获整个页面的屏幕截图
-    let screenshot_data = tab.capture_screenshot(
-        Page::CaptureScreenshotFormatOption::Png, // 截图格式为 PNG
-        None,                                     // 使用默认视图宽度
-        None,                                     // 使用默认视图高度
-        true,                                     // 从设备的像素比例中捕获
-    )?;
+//     Ok(())
+// }
 
-    // 保存屏幕截图到文件
-    std::fs::write("dy.png", screenshot_data)?;
+fn navigate_and_extract(tab: &Tab, url: &str) -> Result<(), Box<dyn Error>> {
+    tab.navigate_to(url)?.wait_until_navigated()?;
 
-    println!("Screenshot saved as 'dy.png'");
+    thread::sleep(Duration::from_secs(1)); // Consider using more reliable wait conditions if possible
+
+    let result = tab
+        .evaluate(&extraction_script(), true)?
+        .value
+        .ok_or("Failed to extract data")?;
+    let live_info: Value = serde_json::from_str(result.as_str().ok_or("Invalid JSON format")?)?;
+
+    println!("直播链接: {}", live_info["liveLink"]);
+    println!("直播标题: {}", live_info["liveTitle"]);
+
+    // If liveLink is found and not the placeholder text, write to file
+    if live_info["liveLink"] != "直播链接未找到" {
+        write_live_link_to_file(live_info["liveLink"].as_str().unwrap())?;
+    }
 
     Ok(())
+}
+
+fn extraction_script() -> String {
+    r#"
+        (() => {
+            const liveLinkElement = document.querySelector('a[href^="https://live.douyin.com/"]');
+            let liveLink = liveLinkElement ? liveLinkElement.href : '直播链接未找到';
+            if (liveLink !== '直播链接未找到') {
+                liveLink = liveLink.split('?')[0];
+            }
+
+            const userInfoElement = document.querySelector('[data-e2e="user-info"]');
+            let liveTitle = userInfoElement ? userInfoElement.querySelector('h1')?.textContent || '直播标题未找到' : '直播标题未找到';
+
+            return JSON.stringify({ liveLink, liveTitle });
+        })()
+    "#.to_string()
+}
+
+fn write_live_link_to_file(live_link: &str) -> Result<(), Box<dyn Error>> {
+    let config_path = Path::new("../../../config");
+    fs::create_dir_all(&config_path)?;
+
+    let file_path = config_path.join("URL_config.ini");
+    let mut content = String::new();
+
+    // Read the existing content if the file exists
+    if file_path.exists() {
+        content = fs::read_to_string(&file_path)?;
+    }
+
+    // Check if the live_link is already present to avoid duplicates
+    if !content.contains(live_link) {
+        let mut file = OpenOptions::new()
+            .create(true)
+            .write(true)
+            .append(true)
+            .open(file_path)?;
+
+        // Write the live_link if it's not found in the content, manage initial empty line
+        if !content.is_empty() {
+            writeln!(file, "{}", live_link)?;
+        } else {
+            write!(file, "{}", live_link)?;
+        }
+    }
+
+    Ok(())
+}
+
+fn read_urls_from_file(file_path: &str) -> Result<Vec<String>, Box<dyn Error>> {
+    let path = Path::new(file_path);
+    let file = File::open(path)?;
+    let buf = io::BufReader::new(file);
+    let urls = buf
+        .lines()
+        .filter_map(|line| line.ok())
+        .map(|line| line.split(',').next().unwrap().trim().to_string())
+        .collect();
+    Ok(urls)
 }
