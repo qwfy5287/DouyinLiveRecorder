@@ -55,21 +55,6 @@ impl FileWatcher {
             self.notify(&event);
         }
     }
-
-    // pub fn start(&self) {
-    //     let (tx, rx) = channel();
-
-    //     let config = Config::default().with_poll_interval(Duration::from_secs(5));
-    //     let mut watcher = PollWatcher::new(tx, config).unwrap();
-
-    //     watcher
-    //         .watch(Path::new("./downloads"), RecursiveMode::Recursive)
-    //         .unwrap();
-
-    //     for event in rx {
-    //         self.notify(&event);
-    //     }
-    // }
 }
 
 struct LoggingObserver;

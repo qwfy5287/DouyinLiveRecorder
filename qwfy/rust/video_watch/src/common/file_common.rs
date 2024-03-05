@@ -49,8 +49,6 @@ pub fn change_filename_based_on_creation_time(
                 if new_path != *file_path {
                     fs::rename(file_path, &new_path)?;
                     println!("File renamed to {:?}", new_path);
-                    // 生成 .jpg 缩略图
-                    // process_video(&new_path);
                     return Ok(new_path);
                 }
             }
@@ -71,7 +69,17 @@ pub fn rename_existing_files(path: &Path) -> Result<(), Box<dyn Error>> {
             } else if let Some(ext) = path.extension().and_then(|e| e.to_str()) {
                 if ext.eq_ignore_ascii_case("mp4") {
                     // 如果是 .mp4 文件，则尝试重命名
-                    change_filename_based_on_creation_time(&path)?;
+                    // change_filename_based_on_creation_time(&path)?;
+                    match change_filename_based_on_creation_time(&path) {
+                        Ok(new_path) => {
+                            println!("MP4 file renamed based on creation time: {:?}", new_path);
+                            // 文件可能已被重命名，`new_path` 是当前文件的路径
+                            // process_video(&new_path);
+                        }
+                        Err(e) => {
+                            eprintln!("Error renaming file: {:?}", e);
+                        }
+                    }
                 }
             }
         }
