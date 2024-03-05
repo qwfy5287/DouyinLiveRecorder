@@ -28,12 +28,14 @@ fn main() -> Result<(), Box<dyn Error>> {
                     println!("Failed to open new tab: {}", e);
                     // Consider re-initializing the browser if necessary
                     browser = Browser::default()?;
+                    let tab = browser.new_tab()?;
+                    navigate_and_extract(&tab, url)?;
                 }
             }
         }
 
         println!("等待20秒后继续处理下一轮URLs");
-        thread::sleep(Duration::from_secs(60));
+        thread::sleep(Duration::from_secs(30));
     }
 }
 
