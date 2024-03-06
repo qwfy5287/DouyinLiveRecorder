@@ -6,7 +6,7 @@ use std::fs::{self};
 use std::path::{Path, PathBuf};
 use std::time::UNIX_EPOCH;
 
-use crate::common::thumb::process_video;
+// use crate::common::thumb::process_video;
 
 pub fn change_filename_based_on_creation_time(
     file_path: &PathBuf,
