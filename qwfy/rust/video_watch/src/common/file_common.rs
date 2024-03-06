@@ -6,7 +6,30 @@ use std::fs::{self};
 use std::path::{Path, PathBuf};
 use std::time::UNIX_EPOCH;
 
-// use crate::common::thumb::process_video;
+use crate::common::thumb::process_video;
+
+fn check_if_named_by_creation_time(file_path: &Path) -> Result<bool, Box<dyn Error>> {
+    let metadata = fs::metadata(file_path)?;
+    let systime = metadata.created()?;
+    let datetime = systime.duration_since(UNIX_EPOCH)?;
+    let local_datetime = chrono::Local
+        .timestamp_opt(datetime.as_secs() as i64, datetime.subsec_nanos())
+        .unwrap();
+    let formatted_creation_time = local_datetime.format("%H-%M-%S").to_string();
+
+    if let Some(file_name) = file_path.file_name().and_then(|n| n.to_str()) {
+        // 假设文件名格式为 "CocoMiracle轻奢女装_2024-03-06_23-49-48_000.mp4"
+        // 你需要根据实际格式调整splitn和nth的参数
+        if let Some(timestamp_section) = file_name.splitn(3, '_').nth(2) {
+            // 提取文件名中的时间戳部分
+            let timestamp_in_file_name = timestamp_section.splitn(2, '_').next().unwrap_or("");
+            // 比较
+            return Ok(timestamp_in_file_name == formatted_creation_time);
+        }
+    }
+
+    Ok(false)
+}
 
 pub fn change_filename_based_on_creation_time(
     file_path: &PathBuf,
@@ -68,16 +91,25 @@ pub fn rename_existing_files(path: &Path) -> Result<(), Box<dyn Error>> {
                 rename_existing_files(&path)?;
             } else if let Some(ext) = path.extension().and_then(|e| e.to_str()) {
                 if ext.eq_ignore_ascii_case("mp4") {
-                    // 如果是 .mp4 文件，则尝试重命名
-                    // change_filename_based_on_creation_time(&path)?;
-                    match change_filename_based_on_creation_time(&path) {
-                        Ok(new_path) => {
-                            println!("MP4 file renamed based on creation time: {:?}", new_path);
-                            // 文件可能已被重命名，`new_path` 是当前文件的路径
-                            // process_video(&new_path);
-                        }
-                        Err(e) => {
-                            eprintln!("Error renaming file: {:?}", e);
+                    // 如果是 .mp4 文件，则检查文件名是否已按创建时间命名
+                    if let Some(file_name) = path.file_name().and_then(|n| n.to_str()) {
+                        let already_named_by_creation_time =
+                            check_if_named_by_creation_time(&path)?;
+
+                        if !already_named_by_creation_time {
+                            // 如果文件名尚未按创建时间命名，则尝试重命名
+                            match change_filename_based_on_creation_time(&path) {
+                                Ok(new_path) => {
+                                    println!(
+                                        "MP4 file renamed based on creation time: {:?}",
+                                        new_path
+                                    );
+                                    // process_video(&new_path);
+                                }
+                                Err(e) => {
+                                    eprintln!("Error renaming file: {:?}", e);
+                                }
+                            }
                         }
                     }
                 }
