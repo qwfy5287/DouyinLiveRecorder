@@ -48,7 +48,7 @@ pub fn change_filename_based_on_creation_time(
                 let new_path = file_path.with_file_name(new_file_name);
                 if new_path != *file_path {
                     fs::rename(file_path, &new_path)?;
-                    println!("File renamed to {:?}", new_path);
+                    println!("文件重命名 到 {:?}", new_path);
                     return Ok(new_path);
                 }
             }

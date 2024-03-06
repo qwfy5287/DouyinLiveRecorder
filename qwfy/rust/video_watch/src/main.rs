@@ -98,13 +98,10 @@ impl Observer for Mp4Observer {
                         if event.kind.is_create() {
                             match change_filename_based_on_creation_time(&path) {
                                 Ok(new_path) => {
-                                    println!(
-                                        "MP4 file renamed based on creation time: {:?}",
-                                        new_path
-                                    );
+                                    println!("MP4 文件重命名根据创建时间: {:?}", new_path);
                                 }
                                 Err(e) => {
-                                    eprintln!("Error renaming file: {:?}", e);
+                                    eprintln!("Error 重命名文件: {:?}", e);
                                 }
                             }
                         } else if event.kind.is_modify() {
