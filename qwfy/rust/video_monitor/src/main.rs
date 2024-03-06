@@ -11,6 +11,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut browser = Browser::default()?;
     let urls = read_urls_from_file("./config/user_list.ini")?;
 
+    // 刷新时间间隔
+    let refresh_interval = 30;
+
     loop {
         for url in &urls {
             let tab_result = browser.new_tab();
@@ -25,7 +28,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                     // Ensure to close or release the tab resource here if applicable
                 }
                 Err(e) => {
-                    println!("Failed to open new tab: {}", e);
+                    println!("无法打开新标签，重新初始化 Browser: {}", e);
                     // Consider re-initializing the browser if necessary
                     browser = Browser::default()?;
                     let tab = browser.new_tab()?;
@@ -34,8 +37,8 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
         }
 
-        println!("等待20秒后继续处理下一轮URLs");
-        thread::sleep(Duration::from_secs(30));
+        println!("等待{}秒后继续处理下一轮URLs", refresh_interval);
+        thread::sleep(Duration::from_secs(refresh_interval));
     }
 }
 
