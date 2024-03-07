@@ -31,31 +31,6 @@ fn ensure_directory_exists(path: &Path) -> std::io::Result<()> {
     Ok(())
 }
 
-// fn rename_files(input_dir: &Path, video_filename: &str) -> std::io::Result<()> {
-//     for entry in fs::read_dir(input_dir)? {
-//         let entry = entry?;
-//         let path = entry.path();
-//         if path.is_file() {
-//             if let Some(filename) = path.file_name().and_then(|s| s.to_str()) {
-//                 if let Some(frame_number_str) = filename
-//                     .strip_prefix(video_filename)
-//                     .and_then(|f| f.strip_suffix(".jpg"))
-//                     .and_then(|f| f.trim_start_matches('_').parse().ok())
-//                 {
-//                     let seconds = frame_number_str * 15;
-//                     let new_filename =
-//                         format!("{}_{}.jpg", video_filename, seconds_to_timestamp(seconds));
-//                     let new_path = input_dir.join(new_filename);
-//                     fs::rename(path, new_path)?;
-//                 }
-//             }
-//         }
-//     }
-//     Ok(())
-// }
-
-// ...
-
 fn rename_files(input_dir: &Path, video_filename: &str) -> std::io::Result<()> {
     for entry in fs::read_dir(input_dir)? {
         let entry = entry?;
@@ -78,8 +53,6 @@ fn rename_files(input_dir: &Path, video_filename: &str) -> std::io::Result<()> {
     }
     Ok(())
 }
-
-// ...
 
 fn seconds_to_timestamp(seconds: i32) -> String {
     format!(
