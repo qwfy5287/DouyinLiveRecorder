@@ -1,8 +1,5 @@
 // qwfy/rust/video_thumb/src/main.rs
 
-// qwfy/rust/video_thumb/data/@魏老板私服_2024-02-26_07-14-44_025.mp4
-
-// 引入必要的库
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -18,42 +15,62 @@ fn generate_thumbnails(file_path: &str, output_pattern: &str) -> Result<(), Stri
         .arg("vfr") // 避免重复帧
         .arg(output_pattern) // 输出文件模式，例如: output_%03d.jpg
         .status()
-        .expect("Failed to execute ffmpeg");
+        .map_err(|_| "Failed to execute ffmpeg".to_string())?;
 
-    match status.success() {
-        true => Ok(()),
-        false => Err("Failed to generate thumbnails".into()),
+    if status.success() {
+        Ok(())
+    } else {
+        Err("Failed to generate thumbnails".into())
     }
 }
 
-fn ensure_directory_exists(path: &str) -> Result<(), std::io::Error> {
-    let path = Path::new(path);
+fn ensure_directory_exists(path: &Path) -> std::io::Result<()> {
     if !path.exists() {
         fs::create_dir_all(path)?;
     }
     Ok(())
 }
 
-fn rename_files(input_dir: &str, video_filename: &str) -> std::io::Result<()> {
-    let dir = Path::new(input_dir);
-    if dir.is_dir() {
-        for entry in fs::read_dir(dir)? {
-            let entry = entry?;
-            let path = entry.path();
-            if path.is_file() {
-                let filename = path.file_name().unwrap().to_str().unwrap();
-                // 直接处理 "@魏老板私服_2024-02-26_07-14-44_025_001.jpg" 格式的文件名
-                if let Some(capture) = filename
+// fn rename_files(input_dir: &Path, video_filename: &str) -> std::io::Result<()> {
+//     for entry in fs::read_dir(input_dir)? {
+//         let entry = entry?;
+//         let path = entry.path();
+//         if path.is_file() {
+//             if let Some(filename) = path.file_name().and_then(|s| s.to_str()) {
+//                 if let Some(frame_number_str) = filename
+//                     .strip_prefix(video_filename)
+//                     .and_then(|f| f.strip_suffix(".jpg"))
+//                     .and_then(|f| f.trim_start_matches('_').parse().ok())
+//                 {
+//                     let seconds = frame_number_str * 15;
+//                     let new_filename =
+//                         format!("{}_{}.jpg", video_filename, seconds_to_timestamp(seconds));
+//                     let new_path = input_dir.join(new_filename);
+//                     fs::rename(path, new_path)?;
+//                 }
+//             }
+//         }
+//     }
+//     Ok(())
+// }
+
+// ...
+
+fn rename_files(input_dir: &Path, video_filename: &str) -> std::io::Result<()> {
+    for entry in fs::read_dir(input_dir)? {
+        let entry = entry?;
+        let path = entry.path();
+        if path.is_file() {
+            if let Some(filename) = path.file_name().and_then(|s| s.to_str()) {
+                if let Some(frame_number_str) = filename
                     .strip_prefix(video_filename)
                     .and_then(|f| f.strip_suffix(".jpg"))
+                    .and_then(|f| f.trim_start_matches('_').parse::<i32>().ok())
                 {
-                    let frame_number_str = capture.trim_start_matches('_');
-                    let frame_number = frame_number_str.parse::<i32>().unwrap();
-                    // 将帧号转换为时间，这里假设每15帧为一秒
-                    let seconds = frame_number * 15;
+                    let seconds = frame_number_str * 15;
                     let new_filename =
                         format!("{}_{}.jpg", video_filename, seconds_to_timestamp(seconds));
-                    let new_path = dir.join(new_filename);
+                    let new_path = input_dir.join(new_filename);
                     fs::rename(path, new_path)?;
                 }
             }
@@ -61,6 +78,8 @@ fn rename_files(input_dir: &str, video_filename: &str) -> std::io::Result<()> {
     }
     Ok(())
 }
+
+// ...
 
 fn seconds_to_timestamp(seconds: i32) -> String {
     format!(
@@ -71,48 +90,48 @@ fn seconds_to_timestamp(seconds: i32) -> String {
     )
 }
 
-fn process_videos(base_path: &str) {
-    let video_ext = "mp4"; // 定义视频文件的扩展名
+fn process_video(video_path: &Path, base_path: &Path) -> std::io::Result<()> {
+    let video_name = video_path
+        .file_stem()
+        .and_then(|s| s.to_str())
+        .unwrap_or_default();
+    let output_dir = base_path.join(format!("{}_thumb", video_name));
+    let output_pattern = output_dir.join(format!("{}_%03d.jpg", video_name));
 
-    match fs::read_dir(base_path) {
-        Ok(entries) => {
-            for entry in entries.filter_map(Result::ok) {
-                let path = entry.path();
-                if path.is_file() && path.extension().unwrap_or_default() == video_ext {
-                    let video_name = path.file_stem().unwrap_or_default().to_string_lossy();
-                    let input_video_path = path.to_string_lossy().into_owned();
-                    let output_dir = format!("{}/{}_thumb", base_path, video_name);
-                    let output_pattern =
-                        format!("{}/{}_thumb/{}_%03d.jpg", base_path, video_name, video_name);
+    ensure_directory_exists(&output_dir)?;
 
-                    if let Err(e) = ensure_directory_exists(&output_dir) {
-                        eprintln!(
-                            "Error creating output directory for '{}': {}",
-                            video_name, e
-                        );
-                        continue;
-                    }
-
-                    if let Err(e) = generate_thumbnails(&input_video_path, &output_pattern) {
-                        eprintln!("Error generating thumbnails for '{}': {}", video_name, e);
-                        continue;
-                    }
-
-                    if let Err(e) = rename_files(&output_dir, &video_name) {
-                        eprintln!("Error renaming files for '{}': {}", video_name, e);
-                        continue;
-                    }
-
-                    println!("Thumbnails generated successfully for '{}'", video_name);
-                }
-            }
-        }
-        Err(e) => eprintln!("Failed to read directory '{}': {}", base_path, e),
+    if let Err(e) = generate_thumbnails(
+        video_path.to_str().unwrap(),
+        output_pattern.to_str().unwrap(),
+    ) {
+        eprintln!("Error generating thumbnails for '{}': {}", video_name, e);
+        return Ok(());
     }
+
+    if let Err(e) = rename_files(&output_dir, video_name) {
+        eprintln!("Error renaming files for '{}': {}", video_name, e);
+        return Ok(());
+    }
+
+    println!("Thumbnails generated successfully for '{}'", video_name);
+    Ok(())
+}
+
+fn process_videos(base_path: &Path) -> std::io::Result<()> {
+    let video_ext = "mp4";
+    for entry in fs::read_dir(base_path)? {
+        let entry = entry?;
+        let path = entry.path();
+        if path.is_file() && path.extension().map(|s| s == video_ext).unwrap_or(false) {
+            process_video(&path, base_path)?;
+        }
+    }
+    Ok(())
 }
 
 fn main() {
-    // let base_path = "./data";
-    let base_path = "../../../downloads/抖音直播/ELLE女装旗舰店";
-    process_videos(base_path);
+    let base_path = "../../../downloads/抖音直播/诗篇女装旗舰店";
+    if let Err(e) = process_videos(Path::new(base_path)) {
+        eprintln!("Failed to process videos in '{}': {}", base_path, e);
+    }
 }
