@@ -2,11 +2,7 @@
 
 use std::{error::Error, thread, time::Duration};
 
-mod common{
-  pub mod douyin_file;
-  pub mod douyin_headless;
-  pub mod douyin_fetch;
-}
+mod common;
 
 use crate::common::{
     douyin_file::{read_urls_from_file, write_live_link_to_file},
@@ -45,7 +41,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     }
                 }
             } else {
-                
+
                 match fetch_url(url).await {
                     Ok(content) => {
                         // println!("页面HTML内容:\n{}", content);
