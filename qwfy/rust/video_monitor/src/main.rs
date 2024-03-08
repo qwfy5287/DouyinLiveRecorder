@@ -45,41 +45,32 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     }
                 }
             } else {
-                // match fetch_url(url).await {
-                //     Ok(content) => {
-                //       println!("url:\n{}", url);
-                //         println!("页面HTML内容:\n{}", content);
-                //         // 在这里添加处理 fetch 结果的代码
-                //     }
-                //     Err(e) => {
-                //         println!("Error fetching URL: {}", e);
-                //     }
-                // }
+                
                 match fetch_url(url).await {
-                                    Ok(content) => {
-                                        // println!("页面HTML内容:\n{}", content);
+                    Ok(content) => {
+                        // println!("页面HTML内容:\n{}", content);
 
-                                        // 处理 fetch 结果
-                                        match extract_from_content(&content) {
-                                            Ok((live_link, live_title)) => {
-                                                println!("直播链接: {}", live_link);
-                                                println!("直播标题: {}", live_title);
+                        // 处理 fetch 结果
+                        match extract_from_content(&content) {
+                            Ok((live_link, live_title)) => {
+                                println!("直播链接: {}", live_link);
+                                println!("直播标题: {}", live_title);
 
-                                                if live_link != "直播链接未找到" {
-                                                    if let Err(e) = write_live_link_to_file(&live_link) {
-                                                        println!("写入直播链接到文件时出错: {}", e);
-                                                    }
-                                                }
-                                            }
-                                            Err(e) => {
-                                                println!("提取直播信息时出错: {}", e);
-                                            }
-                                        }
-                                    }
-                                    Err(e) => {
-                                        println!("Error fetching URL: {}", e);
+                                if live_link != "直播链接未找到" {
+                                    if let Err(e) = write_live_link_to_file(&live_link) {
+                                        println!("写入直播链接到文件时出错: {}", e);
                                     }
                                 }
+                            }
+                            Err(e) => {
+                                println!("提取直播信息时出错: {}", e);
+                            }
+                        }
+                    }
+                    Err(e) => {
+                        println!("Error fetching URL: {}", e);
+                    }
+                }
             }
         }
 
@@ -87,49 +78,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
         thread::sleep(Duration::from_secs(refresh_interval));
     }
 }
-
-
-// fn extract_from_content(content: &str) -> Result<(String, String), Box<dyn Error>> {
-//     let document = scraper::Html::parse_document(content);
-
-//     let live_link_selector = scraper::Selector::parse("a[href^='https://live.douyin.com/']").unwrap();
-//     let live_link = document
-//         .select(&live_link_selector)
-//         .next()
-//         .map(|element| element.value().attr("href").unwrap_or("直播链接未找到").split('?').next().unwrap_or("直播链接未找到"))
-//         .unwrap_or("直播链接未找到")
-//         .to_string();
-
-//     let live_title_selector = scraper::Selector::parse("[data-e2e='user-info'] h1").unwrap();
-//     let live_title = document
-//         .select(&live_title_selector)
-//         .next()
-//         .map(|element| element.inner_html())
-//         .unwrap_or_else(|| "直播标题未找到".to_string());
-
-//     Ok((live_link, live_title))
-// }
-
-// fn extract_from_content(content: &str) -> Result<(String, String), Box<dyn Error>> {
-//     let document = scraper::Html::parse_document(content);
-
-//     let live_link_selector = scraper::Selector::parse("a[href^='https://live.douyin.com/']").unwrap();
-//     let live_link = document
-//         .select(&live_link_selector)
-//         .next()
-//         .map(|element| element.value().attr("href").unwrap_or("直播链接未找到").split('?').next().unwrap_or("直播链接未找到"))
-//         .unwrap_or("直播链接未找到")
-//         .to_string();
-
-//     let live_title_selector = scraper::Selector::parse("[data-e2e='user-info'] h1 span span span span").unwrap();
-//     let live_title = document
-//         .select(&live_title_selector)
-//         .next()
-//         .map(|element| element.inner_html())
-//         .unwrap_or_else(|| "直播标题未找到".to_string());
-
-//     Ok((live_link, live_title))
-// }
 
 fn extract_from_content(content: &str) -> Result<(String, String), Box<dyn Error>> {
     let document = scraper::Html::parse_document(content);

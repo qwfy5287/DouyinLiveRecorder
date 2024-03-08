@@ -29,27 +29,6 @@ pub fn navigate_and_extract(tab: &Tab, url: &str) -> Result<(), Box<dyn Error>> 
     Ok(())
 }
 
-// pub fn navigate_and_extract(tab: &Tab, url: &str) -> Result<(), Box<dyn Error>> {
-//     tab.navigate_to(url)?.wait_until_navigated()?;
-
-//     thread::sleep(Duration::from_secs(1));
-
-//     let result = tab
-//         .evaluate(&extraction_script(), true)?
-//         .value
-//         .ok_or("Failed to extract data")?;
-//     let live_info: Value = serde_json::from_str(result.as_str().ok_or("Invalid JSON format")?)?;
-
-//     println!("直播链接: {}", live_info["liveLink"]);
-//     println!("直播标题: {}", live_info["liveTitle"]);
-
-//     if live_info["liveLink"] != "直播链接未找到" {
-//         write_live_link_to_file(live_info["liveLink"].as_str().unwrap())?;
-//     }
-
-//     Ok(())
-// }
-
 fn extraction_script() -> String {
     r#"
         (() => {
