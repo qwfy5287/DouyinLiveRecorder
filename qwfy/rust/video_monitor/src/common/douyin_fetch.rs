@@ -3,6 +3,10 @@
 use reqwest::header::{HeaderMap, HeaderValue, USER_AGENT, COOKIE, ACCEPT, ACCEPT_LANGUAGE, CACHE_CONTROL, PRAGMA, UPGRADE_INSECURE_REQUESTS};
 use std::fs;
 
+use serde_json::Value;
+use std::{error::Error, thread, time::Duration};
+
+
 pub async fn fetch_url(url: &str) -> Result<String, Box<dyn std::error::Error>> {
     let config = fs::read_to_string("./config/douyin_config.ini")?;
     let mut headers = HeaderMap::new();
@@ -33,4 +37,26 @@ pub async fn fetch_url(url: &str) -> Result<String, Box<dyn std::error::Error>> 
 
     let content = response.text().await?;
     Ok(content)
+}
+
+
+pub fn extract_from_content(content: &str) -> Result<(String, String), Box<dyn Error>> {
+    let document = scraper::Html::parse_document(content);
+
+    let live_link_selector = scraper::Selector::parse("a[href^='https://live.douyin.com/']").unwrap();
+    let live_link = document
+        .select(&live_link_selector)
+        .next()
+        .map(|element| element.value().attr("href").unwrap_or("直播链接未找到").split('?').next().unwrap_or("直播链接未找到"))
+        .unwrap_or("直播链接未找到")
+        .to_string();
+
+    let live_title_selector = scraper::Selector::parse("[data-e2e='user-info'] h1").unwrap();
+    let live_title = document
+        .select(&live_title_selector)
+        .next()
+        .map(|element| element.text().collect::<String>().trim().to_string())
+        .unwrap_or_else(|| "直播标题未找到".to_string());
+
+    Ok((live_link, live_title))
 }
