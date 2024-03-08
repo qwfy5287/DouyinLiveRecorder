@@ -1,8 +1,8 @@
 // qwfy/rust/video_monitor/src/main.rs
 
-use std::{error::Error, thread, time::Duration};
-
 mod common;
+
+use std::{error::Error, thread, time::Duration};
 
 use crate::common::{
     douyin_file::{read_urls_from_file, write_live_link_to_file},

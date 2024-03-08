@@ -1,16 +1,12 @@
 // qwfy/rust/video_watch/src/main.rs
 
+mod common;
+
 use notify::{Config, PollWatcher, RecursiveMode, Result, Watcher};
 use std::path::Path;
 use std::process::Command;
 use std::sync::mpsc::channel;
 use std::time::Duration;
-
-mod common {
-    pub mod file_common;
-    pub mod thumb;
-    // pub mod thumb_next;
-}
 
 use crate::common::file_common::change_filename_based_on_creation_time;
 use crate::common::file_common::rename_existing_files;
