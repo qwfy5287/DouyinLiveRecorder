@@ -1,39 +1,85 @@
-use headless_chrome::{Browser, Tab};
-use serde_json::Value;
-use std::fs::File;
-use std::fs::{self, OpenOptions};
-use std::io::Write;
-use std::io::{self, BufRead};
-use std::path::Path;
+// qwfy/rust/video_monitor/src/main.rs
+
 use std::{error::Error, thread, time::Duration};
 
-fn main() -> Result<(), Box<dyn Error>> {
+mod common{
+  pub mod douyin_file;
+  pub mod douyin_headless;
+  pub mod douyin_fetch;
+}
+
+use crate::common::{
+    douyin_file::{read_urls_from_file, write_live_link_to_file},
+    douyin_headless::navigate_and_extract,
+    douyin_fetch::fetch_url,
+};
+
+use headless_chrome::Browser;
+use serde_json::Value;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn Error>> {
     let mut browser = Browser::default()?;
     let urls = read_urls_from_file("./config/user_list.ini")?;
 
-    // 刷新时间间隔
     let refresh_interval = 30;
+    let use_headless = false; // 设置为 true 使用 headless,设置为 false 使用 fetch
 
     loop {
         for url in &urls {
-            let tab_result = browser.new_tab();
+            if use_headless {
+                let tab_result = browser.new_tab();
 
-            match tab_result {
-                Ok(tab) => {
-                    let extract_result = navigate_and_extract(&tab, url);
-                    if extract_result.is_err() {
-                        // Handle error, log it, or decide to break/continue
-                        println!("Error navigating to URL: {}", url);
+                match tab_result {
+                    Ok(tab) => {
+                        let extract_result = navigate_and_extract(&tab, url);
+                        if extract_result.is_err() {
+                            println!("Error navigating to URL: {}", url);
+                        }
                     }
-                    // Ensure to close or release the tab resource here if applicable
+                    Err(e) => {
+                        println!("无法打开新标签,重新初始化 Browser: {}", e);
+                        browser = Browser::default()?;
+                        let tab = browser.new_tab()?;
+                        navigate_and_extract(&tab, url)?;
+                    }
                 }
-                Err(e) => {
-                    println!("无法打开新标签，重新初始化 Browser: {}", e);
-                    // Consider re-initializing the browser if necessary
-                    browser = Browser::default()?;
-                    let tab = browser.new_tab()?;
-                    navigate_and_extract(&tab, url)?;
-                }
+            } else {
+                // match fetch_url(url).await {
+                //     Ok(content) => {
+                //       println!("url:\n{}", url);
+                //         println!("页面HTML内容:\n{}", content);
+                //         // 在这里添加处理 fetch 结果的代码
+                //     }
+                //     Err(e) => {
+                //         println!("Error fetching URL: {}", e);
+                //     }
+                // }
+                match fetch_url(url).await {
+                                    Ok(content) => {
+                                        // println!("页面HTML内容:\n{}", content);
+
+                                        // 处理 fetch 结果
+                                        match extract_from_content(&content) {
+                                            Ok((live_link, live_title)) => {
+                                                println!("直播链接: {}", live_link);
+                                                println!("直播标题: {}", live_title);
+
+                                                if live_link != "直播链接未找到" {
+                                                    if let Err(e) = write_live_link_to_file(&live_link) {
+                                                        println!("写入直播链接到文件时出错: {}", e);
+                                                    }
+                                                }
+                                            }
+                                            Err(e) => {
+                                                println!("提取直播信息时出错: {}", e);
+                                            }
+                                        }
+                                    }
+                                    Err(e) => {
+                                        println!("Error fetching URL: {}", e);
+                                    }
+                                }
             }
         }
 
@@ -42,116 +88,66 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 }
 
-// // 循环
-// fn main() -> Result<(), Box<dyn Error>> {
-//     let browser = Browser::default()?;
-//     let urls = read_urls_from_file("./config/user_list.ini")?;
 
-//     loop {
-//         // 对每个URL执行操作
-//         for url in &urls {
-//             let tab = browser.new_tab()?;
-//             navigate_and_extract(&tab, url)?;
-//         }
+// fn extract_from_content(content: &str) -> Result<(String, String), Box<dyn Error>> {
+//     let document = scraper::Html::parse_document(content);
 
-//         println!("等待20秒后继续处理下一轮URLs");
-//         // 完成一轮处理所有URLs后，等待20秒
-//         thread::sleep(Duration::from_secs(20));
-//     }
+//     let live_link_selector = scraper::Selector::parse("a[href^='https://live.douyin.com/']").unwrap();
+//     let live_link = document
+//         .select(&live_link_selector)
+//         .next()
+//         .map(|element| element.value().attr("href").unwrap_or("直播链接未找到").split('?').next().unwrap_or("直播链接未找到"))
+//         .unwrap_or("直播链接未找到")
+//         .to_string();
+
+//     let live_title_selector = scraper::Selector::parse("[data-e2e='user-info'] h1").unwrap();
+//     let live_title = document
+//         .select(&live_title_selector)
+//         .next()
+//         .map(|element| element.inner_html())
+//         .unwrap_or_else(|| "直播标题未找到".to_string());
+
+//     Ok((live_link, live_title))
 // }
 
-// 单次
-// fn main() -> Result<(), Box<dyn Error>> {
-//     let browser = Browser::default()?;
+// fn extract_from_content(content: &str) -> Result<(String, String), Box<dyn Error>> {
+//     let document = scraper::Html::parse_document(content);
 
-//     let urls = read_urls_from_file("./config/user_list.ini")?;
+//     let live_link_selector = scraper::Selector::parse("a[href^='https://live.douyin.com/']").unwrap();
+//     let live_link = document
+//         .select(&live_link_selector)
+//         .next()
+//         .map(|element| element.value().attr("href").unwrap_or("直播链接未找到").split('?').next().unwrap_or("直播链接未找到"))
+//         .unwrap_or("直播链接未找到")
+//         .to_string();
 
-//     for url in urls {
-//         let tab = browser.new_tab()?;
-//         navigate_and_extract(&tab, &url)?;
-//     }
+//     let live_title_selector = scraper::Selector::parse("[data-e2e='user-info'] h1 span span span span").unwrap();
+//     let live_title = document
+//         .select(&live_title_selector)
+//         .next()
+//         .map(|element| element.inner_html())
+//         .unwrap_or_else(|| "直播标题未找到".to_string());
 
-//     Ok(())
+//     Ok((live_link, live_title))
 // }
 
-fn navigate_and_extract(tab: &Tab, url: &str) -> Result<(), Box<dyn Error>> {
-    tab.navigate_to(url)?.wait_until_navigated()?;
+fn extract_from_content(content: &str) -> Result<(String, String), Box<dyn Error>> {
+    let document = scraper::Html::parse_document(content);
 
-    thread::sleep(Duration::from_secs(1)); // Consider using more reliable wait conditions if possible
+    let live_link_selector = scraper::Selector::parse("a[href^='https://live.douyin.com/']").unwrap();
+    let live_link = document
+        .select(&live_link_selector)
+        .next()
+        .map(|element| element.value().attr("href").unwrap_or("直播链接未找到").split('?').next().unwrap_or("直播链接未找到"))
+        .unwrap_or("直播链接未找到")
+        .to_string();
 
-    let result = tab
-        .evaluate(&extraction_script(), true)?
-        .value
-        .ok_or("Failed to extract data")?;
-    let live_info: Value = serde_json::from_str(result.as_str().ok_or("Invalid JSON format")?)?;
+    let live_title_selector = scraper::Selector::parse("[data-e2e='user-info'] h1").unwrap();
+    let live_title = document
+        .select(&live_title_selector)
+        .next()
+        .map(|element| element.text().collect::<String>().trim().to_string())
+        .unwrap_or_else(|| "直播标题未找到".to_string());
 
-    println!("直播链接: {}", live_info["liveLink"]);
-    println!("直播标题: {}", live_info["liveTitle"]);
-
-    // If liveLink is found and not the placeholder text, write to file
-    if live_info["liveLink"] != "直播链接未找到" {
-        write_live_link_to_file(live_info["liveLink"].as_str().unwrap())?;
-    }
-
-    Ok(())
-}
-
-fn extraction_script() -> String {
-    r#"
-        (() => {
-            const liveLinkElement = document.querySelector('a[href^="https://live.douyin.com/"]');
-            let liveLink = liveLinkElement ? liveLinkElement.href : '直播链接未找到';
-            if (liveLink !== '直播链接未找到') {
-                liveLink = liveLink.split('?')[0];
-            }
-
-            const userInfoElement = document.querySelector('[data-e2e="user-info"]');
-            let liveTitle = userInfoElement ? userInfoElement.querySelector('h1')?.textContent || '直播标题未找到' : '直播标题未找到';
-
-            return JSON.stringify({ liveLink, liveTitle });
-        })()
-    "#.to_string()
-}
-
-fn write_live_link_to_file(live_link: &str) -> Result<(), Box<dyn Error>> {
-    let config_path = Path::new("../../../config");
-    fs::create_dir_all(&config_path)?;
-
-    let file_path = config_path.join("URL_config.ini");
-    let mut content = String::new();
-
-    // Read the existing content if the file exists
-    if file_path.exists() {
-        content = fs::read_to_string(&file_path)?;
-    }
-
-    // Check if the live_link is already present to avoid duplicates
-    if !content.contains(live_link) {
-        let mut file = OpenOptions::new()
-            .create(true)
-            .write(true)
-            .append(true)
-            .open(file_path)?;
-
-        // Write the live_link if it's not found in the content, manage initial empty line
-        if !content.is_empty() {
-            writeln!(file, "{}", live_link)?;
-        } else {
-            write!(file, "{}", live_link)?;
-        }
-    }
-
-    Ok(())
-}
-
-fn read_urls_from_file(file_path: &str) -> Result<Vec<String>, Box<dyn Error>> {
-    let path = Path::new(file_path);
-    let file = File::open(path)?;
-    let buf = io::BufReader::new(file);
-    let urls = buf
-        .lines()
-        .filter_map(|line| line.ok())
-        .map(|line| line.split(',').next().unwrap().trim().to_string())
-        .collect();
-    Ok(urls)
+    Ok((live_link, live_title))
 }
