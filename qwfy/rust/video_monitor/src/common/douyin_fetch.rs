@@ -3,8 +3,8 @@
 use reqwest::header::{HeaderMap, HeaderValue, USER_AGENT, COOKIE, ACCEPT, ACCEPT_LANGUAGE, CACHE_CONTROL, PRAGMA, UPGRADE_INSECURE_REQUESTS};
 use std::fs;
 
-use serde_json::Value;
-use std::{error::Error, thread, time::Duration};
+// use serde_json::Value;
+use std::{error::Error};
 
 
 pub async fn fetch_url(url: &str) -> Result<String, Box<dyn std::error::Error>> {

@@ -6,12 +6,12 @@ use std::{error::Error, thread, time::Duration};
 
 use crate::common::{
     douyin_file::{read_urls_from_file, write_live_link_to_file},
-    douyin_headless::navigate_and_extract,
+    // douyin_headless::navigate_and_extract,
     douyin_fetch::{fetch_url, extract_from_content},
 };
 
-use headless_chrome::Browser;
-use serde_json::Value;
+// use headless_chrome::Browser;
+// use serde_json::Value;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -20,31 +20,31 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let refresh_interval = 30;
     let use_headless = false; // 设置为 true 使用 headless,设置为 false 使用 fetch
 
-    let mut browser = None;
-    if use_headless {
-        browser = Some(Browser::default()?);
-    }
+    // let mut browser = None;
+    // if use_headless {
+    //     browser = Some(Browser::default()?);
+    // }
 
     loop {
         for url in &urls {
             if use_headless {
-                if let Some(ref mut b) = browser {
-                    let tab_result = b.new_tab();
-                    match tab_result {
-                        Ok(tab) => {
-                            let extract_result = navigate_and_extract(&tab, url);
-                            if extract_result.is_err() {
-                                println!("Error navigating to URL: {}", url);
-                            }
-                        }
-                        Err(e) => {
-                            println!("无法打开新标签,重新初始化 Browser: {}", e);
-                            *b = Browser::default()?;
-                            let tab = b.new_tab()?;
-                            navigate_and_extract(&tab, url)?;
-                        }
-                    }
-                }
+                // if let Some(ref mut b) = browser {
+                //     let tab_result = b.new_tab();
+                //     match tab_result {
+                //         Ok(tab) => {
+                //             let extract_result = navigate_and_extract(&tab, url);
+                //             if extract_result.is_err() {
+                //                 println!("Error navigating to URL: {}", url);
+                //             }
+                //         }
+                //         Err(e) => {
+                //             println!("无法打开新标签,重新初始化 Browser: {}", e);
+                //             *b = Browser::default()?;
+                //             let tab = b.new_tab()?;
+                //             navigate_and_extract(&tab, url)?;
+                //         }
+                //     }
+                // }
             } else {
                 match fetch_url(url).await {
                     Ok(content) => {
