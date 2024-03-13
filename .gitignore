@@ -163,3 +163,5 @@ cython_debug/
 /backup_config
 /qwfy/rust/video_splitter/data
 /qwfy/rust/video_thumb/data
+/qwfy/rust/video_cut_keywords/data
+/qwfy/rust/video_capcut/data
