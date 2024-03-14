@@ -1,5 +1,3 @@
-extern crate rayon;
-use rayon::prelude::*;
 use serde::Deserialize;
 use std::fs;
 use std::path::Path;
@@ -65,59 +63,104 @@ impl SegmentExtractor for JsonSegmentExtractor {
     }
 }
 
+// struct VideoSplitter;
+
+// impl VideoSplitter {
+//     fn split_video_segments(&self, file_path: &str, segments: Vec<Segment>) -> std::io::Result<()> {
+//         for (index, segment) in segments.iter().enumerate() {
+//             let filename = Path::new(file_path)
+//                 .file_stem()
+//                 .and_then(|s| s.to_str())
+//                 .unwrap();
+
+//             let dir_path = Path::new(file_path).parent().unwrap();
+//             println!("dir_path: {:?}", dir_path);
+//             let output_file = format!(
+//                 "{}_segment_{}_{}.mp4",
+//                 filename,
+//                 index,
+//                 segment.keyword.replace(" ", "_")
+//             );
+
+//             let start_time = segment.start_time.replace(",", ".");
+//             let end_time = segment.end_time.replace(",", ".");
+
+//             Command::new("ffmpeg")
+//                 .args([
+//                     "-i",
+//                     file_path,
+//                     "-ss",
+//                     &start_time,
+//                     "-to",
+//                     &end_time,
+//                     "-c:v",
+//                     "libx264",
+//                     "-c:a",
+//                     "aac",
+//                     &output_file,
+//                 ])
+//                 .status()?;
+
+//             println!("Segment saved: {}", output_file);
+//         }
+
+//         Ok(())
+//     }
+// }
+
 struct VideoSplitter;
 
 impl VideoSplitter {
     fn split_video_segments(&self, file_path: &str, segments: Vec<Segment>) -> std::io::Result<()> {
-        segments
-            .par_iter()
-            .enumerate()
-            .try_for_each(|(index, segment)| {
-                let filename = Path::new(file_path)
-                    .file_stem()
-                    .and_then(|s| s.to_str())
-                    .unwrap();
+        for (index, segment) in segments.iter().enumerate() {
+            let filename = Path::new(file_path)
+                .file_stem()
+                .and_then(|s| s.to_str())
+                .unwrap();
 
-                let dir_path = Path::new(file_path).parent().unwrap();
-                println!("dir_path: {:?}", dir_path);
+            let dir_path = Path::new(file_path).parent().unwrap();
+            println!("dir_path: {:?}", dir_path);
 
-                let output_dir = if segment.keyword.contains(" ") {
-                    dir_path.join(filename).join("srt")
-                } else {
-                    dir_path.join(filename).join("json")
-                };
+            let output_dir = if segment.keyword.contains(" ") {
+                dir_path.join(filename).join("srt")
+            } else {
+                dir_path.join(filename).join("json")
+            };
 
-                std::fs::create_dir_all(&output_dir)?;
+            // dir_path.join(filename);
+            // 加个一层，文件名目录
+            // let output_dir = output_dir.join(filename);
 
-                let output_file = output_dir.join(format!(
-                    "{}_segment_{:02}_{}.mp4",
-                    filename,
-                    index,
-                    segment.keyword.replace(" ", "_")
-                ));
+            std::fs::create_dir_all(&output_dir)?;
 
-                let start_time = segment.start_time.replace(",", ".");
-                let end_time = segment.end_time.replace(",", ".");
+            let output_file = output_dir.join(format!(
+                "{}_segment_{:02}_{}.mp4",
+                filename,
+                index,
+                segment.keyword.replace(" ", "_")
+            ));
 
-                Command::new("ffmpeg")
-                    .args([
-                        "-i",
-                        file_path,
-                        "-ss",
-                        &start_time,
-                        "-to",
-                        &end_time,
-                        "-c:v",
-                        "libx264",
-                        "-c:a",
-                        "aac",
-                        output_file.to_str().unwrap(),
-                    ])
-                    .status()?;
+            let start_time = segment.start_time.replace(",", ".");
+            let end_time = segment.end_time.replace(",", ".");
 
-                println!("Segment saved: {}", output_file.display());
-                Ok::<(), std::io::Error>(())
-            })?;
+            Command::new("ffmpeg")
+                .args([
+                    "-i",
+                    file_path,
+                    "-ss",
+                    &start_time,
+                    "-to",
+                    &end_time,
+                    "-c:v",
+                    "libx264",
+                    "-c:a",
+                    "aac",
+                    output_file.to_str().unwrap(),
+                ])
+                .status()?;
+
+            println!("Segment saved: {}", output_file.display());
+        }
 
         Ok(())
     }
