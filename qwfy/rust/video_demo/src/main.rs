@@ -125,7 +125,7 @@ impl VideoSplitter {
 
 fn main() {
     let file_path = "./data/example.mp4";
-    let segments_file_path = "./data/example.srt";
+    let segments_file_path = "./data/example.json";
 
     match Path::new(&segments_file_path)
         .extension()

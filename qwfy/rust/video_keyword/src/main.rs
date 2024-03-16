@@ -65,7 +65,7 @@ fn split_video(input_video: &str, output_dir: &str, items: &[Item]) {
 
 fn main() {
     // 新的 JSON 文件路径
-    let json_file_path = "./data/奇缘.json";
+    let json_file_path = "./data/exam.json";
 
     let mut file = File::open(json_file_path).expect("Failed to open JSON file");
     let mut json_data = String::new();
@@ -75,6 +75,6 @@ fn main() {
     let items: Vec<Item> = serde_json::from_str(&json_data).unwrap();
 
     println!("Splitting video...");
-    split_video("./data/奇缘.mp4", "./output", &items);
+    split_video("./data/exam.mp4", "./output", &items);
     println!("Video splitting completed.");
 }
