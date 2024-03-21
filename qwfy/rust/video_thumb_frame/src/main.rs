@@ -160,7 +160,8 @@ fn extract_frames(video_path: &str, output_dir: &str, timestamps: &[u64]) -> Res
 
 
 fn main() {
-    let video_path = "../../../../../douyinCut/2024-03-10-07-39-19.mp4";
+    // let video_path = "../../../../../douyinCut/2024-03-10-07-39-19.mp4";
+    let video_path = "../../../../../douyinCut/@魏老板私服/@魏老板私服_2024-03-18/@魏老板私服_2024-03-18_07-33-23.mp4";
     
     let output_dir = "output";
     let interval = 60.0; // 每隔 60 秒提取一幀

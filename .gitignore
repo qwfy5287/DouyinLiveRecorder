@@ -167,3 +167,4 @@ cython_debug/
 /qwfy/rust/video_keyword/data
 qwfy/rust/video_keyword/output
 qwfy/rust/video_demo/data
+qwfy/rust/video_thumb_frame/output

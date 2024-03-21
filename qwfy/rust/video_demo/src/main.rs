@@ -127,8 +127,8 @@ fn main() {
     // let file_path = "./data/example.mp4";
     // let segments_file_path = "./data/example.json";
 
-    let file_path = "../../../../../Movies/3月19日-如梦令.mp4";
-    let segments_file_path = "../../../../../Movies/3月19日-如梦令_keyword.json";
+    let file_path = "../../../../../Movies/3月21日-mix-墨镜.mp4";
+    let segments_file_path = "../../../../../Movies/3月21日-mix-墨镜_keyword.json";
 
     match Path::new(&segments_file_path)
         .extension()
