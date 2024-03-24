@@ -103,8 +103,6 @@ impl VideoSplitter {
                     segment.keyword.replace(" ", "_")
                 ));
 
-                println!("Segment text: {}", segment.text);
-
                 let start_time = segment.start_time.replace(",", ".");
                 let end_time = segment.end_time.replace(",", ".");
 
@@ -132,25 +130,52 @@ impl VideoSplitter {
     }
 }
 
+// fn main() {
+//     let file_path = "../../../../../Movies/bb.mp4";
+//     let segments_file_path = "../../../../../Movies/bb_keyword.json";
+
+//     match Path::new(&segments_file_path)
+//         .extension()
+//         .and_then(|s| s.to_str())
+//     {
+//         Some("json") => {
+//             let segments_json =
+//                 fs::read_to_string(&segments_file_path).expect("Unable to read file");
+//             let json_extractor = JsonSegmentExtractor { segments_json };
+//             let segments = json_extractor.extract_segments();
+//             let video_splitter = VideoSplitter;
+//             video_splitter
+//                 .split_video_segments(file_path, segments_file_path, segments)
+//                 .expect("Failed to split video based on .json file");
+//         }
+//         Some("srt") => {
+//             let srt_content =
+//                 fs::read_to_string(&segments_file_path).expect("Unable to read .srt file");
+//             let srt_extractor = SrtSegmentExtractor { srt_content };
+//             let segments = srt_extractor.extract_segments();
+//             let video_splitter = VideoSplitter;
+//             video_splitter
+//                 .split_video_segments(file_path, segments_file_path, segments)
+//                 .expect("Failed to split video based on .srt file");
+//         }
+//         _ => println!("Unsupported file format."),
+//     }
+// }
+
+
 fn main() {
     let args: Vec<String> = env::args().collect();
-    if args.len() < 2 {
-        println!("使用方式: {} <file_name> [file_type]", args[0]);
-        return;
-    }
-
-    let file_name = &args[1];
-    let file_type = if args.len() > 2 {
-        &args[2]
+    let file_name = if args.len() > 1 {
+        &args[1]
     } else {
-        "json"
+        "cc"
     };
 
     let file_path = format!("../../../../../Movies/{}.mp4", file_name);
-    let segments_file_path = format!("../../../../../Movies/{}_keyword.{}", file_name, file_type);
+    let segments_file_path = format!("../../../../../Movies/{}_keyword.json", file_name);
 
-    match file_type {
-        "json" => {
+    match Path::new(&segments_file_path).extension().and_then(|s| s.to_str()) {
+        Some("json") => {
             let segments_json = fs::read_to_string(&segments_file_path).expect("Unable to read file");
             let json_extractor = JsonSegmentExtractor { segments_json };
             let segments = json_extractor.extract_segments();
@@ -159,7 +184,7 @@ fn main() {
                 .split_video_segments(&file_path, &segments_file_path, segments)
                 .expect("Failed to split video based on .json file");
         }
-        "srt" => {
+        Some("srt") => {
             let srt_content = fs::read_to_string(&segments_file_path).expect("Unable to read .srt file");
             let srt_extractor = SrtSegmentExtractor { srt_content };
             let segments = srt_extractor.extract_segments();
@@ -168,9 +193,6 @@ fn main() {
                 .split_video_segments(&file_path, &segments_file_path, segments)
                 .expect("Failed to split video based on .srt file");
         }
-        _ => {
-            println!("Unsupported keyword file type. Supported types are 'json' and 'srt'.");
-            return;
-        }
+        _ => println!("Unsupported file format."),
     }
 }
