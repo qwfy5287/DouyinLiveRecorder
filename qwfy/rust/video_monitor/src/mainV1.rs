@@ -17,7 +17,7 @@ use crate::common::{
 async fn main() -> Result<(), Box<dyn Error>> {
     let urls = read_urls_from_file("./config/user_list.ini")?;
 
-    let refresh_interval = 60;
+    let refresh_interval = 30;
     let use_headless = false; // 设置为 true 使用 headless,设置为 false 使用 fetch
 
     // let mut browser = None;
