@@ -152,7 +152,8 @@ function filterLinesByKeywords(splitSubtitleLines, keywordList) {
   // 过滤掉分割后的关键词
   let filterLines = splitSubtitleLines.filter((line) => {
     return (
-      keywordList.filter((keyword) => keyword.includes(line.text.trim()))
+      // keywordList.filter((keyword) => keyword.includes(line.text.trim()))
+      keywordList.filter((keyword) => line.text.trim().includes(keyword))
         .length === 0
     );
   });
@@ -204,7 +205,8 @@ function formatNumber(number, minimumIntegerDigits = 2) {
 const jsonData = readJsonFromFile("./draft_info.json");
 
 if (jsonData) {
-  const keywordList = ["买的", "黑色的", "好不好", "然后呢", "呃", "对"];
+  // const keywordList = ["买的", "黑色的", "好不好", "然后呢", "呃", "对"];
+  const keywordList = ["好不", "好不好", "然后呢", "呃", "对"];
   const srtData = jsonToSrt(jsonData, keywordList);
   console.log(srtData);
 }
