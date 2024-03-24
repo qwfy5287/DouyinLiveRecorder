@@ -16,7 +16,7 @@ function convertTimeToMilliseconds(time) {
   return Math.floor(time / 1000);
 }
 
-function jsonToSrt(json, keywordList) {
+function jsonToSrt(json, keywordList, timeThreshold = 200) {
   const srt = [];
   let index = 1;
 
@@ -52,14 +52,16 @@ function jsonToSrt(json, keywordList) {
           const wordEndTime =
             material.words.end_time[i] + segment.target_timerange.start;
 
-          if (wordEndTime - currentLine.endTime <= 200) {
+          if (wordEndTime - currentLine.startTime <= timeThreshold) {
             currentLine.text += word;
             currentLine.endTime = wordEndTime;
           } else {
             subtitleLines.push(currentLine);
             currentLine = {
               text: word,
-              startTime: currentLine.endTime,
+              startTime:
+                wordEndTime -
+                (material.words.end_time[i] - material.words.end_time[i - 1]),
               endTime: wordEndTime,
             };
           }
@@ -117,17 +119,8 @@ function jsonToSrt(json, keywordList) {
           }
         });
 
-        // 过滤掉分割后的关键词
-        let filterLines = filterLinesByKeywords(
-          splitSubtitleLines,
-          keywordList
-        );
-
-        // 合并分割后的相邻的关键词
-        let mergedLines = mergeSubtitleLines(filterLines);
-
         // 将分割后的字幕内容转换为 SRT 格式
-        mergedLines.forEach((line) => {
+        splitSubtitleLines.forEach((line) => {
           const startTime = formatTime(line.startTime);
           const endTime = formatTime(line.endTime);
 
@@ -143,40 +136,6 @@ function jsonToSrt(json, keywordList) {
   });
 
   return srt.join("\n");
-}
-
-function filterLinesByKeywords(splitSubtitleLines, keywordList) {
-  // 过滤掉分割后的关键词
-  let filterLines = splitSubtitleLines.filter((line) => {
-    return (
-      keywordList.filter((keyword) => keyword.includes(line.text.trim()))
-        .length === 0
-    );
-  });
-  return filterLines;
-}
-
-function mergeSubtitleLines(subtitleLines) {
-  const mergedLines = [];
-
-  for (let i = 0; i < subtitleLines.length; i++) {
-    const currentLine = subtitleLines[i];
-
-    if (i === 0) {
-      mergedLines.push(currentLine);
-    } else {
-      const prevLine = mergedLines[mergedLines.length - 1];
-
-      if (prevLine.endTime === currentLine.startTime) {
-        prevLine.text += "" + currentLine.text;
-        prevLine.endTime = currentLine.endTime;
-      } else {
-        mergedLines.push(currentLine);
-      }
-    }
-  }
-
-  return mergedLines;
 }
 
 // 格式化时间为 SRT 格式
@@ -198,10 +157,10 @@ function formatNumber(number, minimumIntegerDigits = 2) {
 }
 
 // 读取 JSON 文件
-const jsonData = readJsonFromFile("./draft_info.json");
+const jsonData = readJsonFromFile("./draft_info_example.json");
 
 if (jsonData) {
-  const keywordList = ["买的", "黑色的", "好不好", "然后呢", "呃", "对"];
-  const srtData = jsonToSrt(jsonData, keywordList);
+  const keywordList = ["买的", "黑色的"];
+  const srtData = jsonToSrt(jsonData, keywordList, 500);
   console.log(srtData);
 }

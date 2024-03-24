@@ -16,7 +16,7 @@ function convertTimeToMilliseconds(time) {
   return Math.floor(time / 1000);
 }
 
-function jsonToSrt(json, keywordList) {
+function jsonToSrt(json, keywordList, timeThreshold = 200) {
   const srt = [];
   let index = 1;
 
@@ -52,14 +52,16 @@ function jsonToSrt(json, keywordList) {
           const wordEndTime =
             material.words.end_time[i] + segment.target_timerange.start;
 
-          if (wordEndTime - currentLine.endTime <= 200) {
+          if (wordEndTime - currentLine.startTime <= timeThreshold) {
             currentLine.text += word;
             currentLine.endTime = wordEndTime;
           } else {
             subtitleLines.push(currentLine);
             currentLine = {
               text: word,
-              startTime: currentLine.endTime,
+              startTime:
+                wordEndTime -
+                (material.words.end_time[i] - material.words.end_time[i - 1]),
               endTime: wordEndTime,
             };
           }
@@ -117,15 +119,39 @@ function jsonToSrt(json, keywordList) {
           }
         });
 
-        // 过滤掉分割后的关键词
-        let filterLines = filterLinesByKeywords(
-          splitSubtitleLines,
-          keywordList
-        );
+        // console.log(JSON.stringify(splitSubtitleLines[0], null, 2));
 
-        // 合并分割后的相邻的关键词
+        // console.log(splitSubtitleLines.length);
+        // splitSubtitleLines.forEach((line) => {
+        //   console.log(line);
+        // });
+
+        // console.log("=====");
+        // console.log(splitSubtitleLines);
+
+        // 过滤掉分割后的关键词
+        let filterLines = splitSubtitleLines.filter((line) => {
+          // if (line.text.includes("然")) {
+          //   console.log("===key====");
+          //   console.log(line);
+          // }
+          return !keywordList.includes(line.text);
+        });
+
+        // console.log("=====");
+        // console.log(filterLines);
+
         let mergedLines = mergeSubtitleLines(filterLines);
 
+        mergedLines.forEach((line) => {
+          if (line.text.includes("然")) {
+            console.log("===key====");
+            console.log(line);
+          }
+        });
+
+        // console.log("=====");
+        // console.log(mergedLines);
         // 将分割后的字幕内容转换为 SRT 格式
         mergedLines.forEach((line) => {
           const startTime = formatTime(line.startTime);
@@ -143,17 +169,6 @@ function jsonToSrt(json, keywordList) {
   });
 
   return srt.join("\n");
-}
-
-function filterLinesByKeywords(splitSubtitleLines, keywordList) {
-  // 过滤掉分割后的关键词
-  let filterLines = splitSubtitleLines.filter((line) => {
-    return (
-      keywordList.filter((keyword) => keyword.includes(line.text.trim()))
-        .length === 0
-    );
-  });
-  return filterLines;
 }
 
 function mergeSubtitleLines(subtitleLines) {
@@ -201,7 +216,7 @@ function formatNumber(number, minimumIntegerDigits = 2) {
 const jsonData = readJsonFromFile("./draft_info.json");
 
 if (jsonData) {
-  const keywordList = ["买的", "黑色的", "好不好", "然后呢", "呃", "对"];
-  const srtData = jsonToSrt(jsonData, keywordList);
-  console.log(srtData);
+  const keywordList = ["买的", "然后呢", "啊", "呃", "好不好", "对", "来"];
+  const srtData = jsonToSrt(jsonData, keywordList, 400);
+  // console.log(srtData);
 }

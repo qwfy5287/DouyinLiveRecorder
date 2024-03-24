@@ -117,17 +117,8 @@ function jsonToSrt(json, keywordList) {
           }
         });
 
-        // 过滤掉分割后的关键词
-        let filterLines = filterLinesByKeywords(
-          splitSubtitleLines,
-          keywordList
-        );
-
-        // 合并分割后的相邻的关键词
-        let mergedLines = mergeSubtitleLines(filterLines);
-
         // 将分割后的字幕内容转换为 SRT 格式
-        mergedLines.forEach((line) => {
+        splitSubtitleLines.forEach((line) => {
           const startTime = formatTime(line.startTime);
           const endTime = formatTime(line.endTime);
 
@@ -143,40 +134,6 @@ function jsonToSrt(json, keywordList) {
   });
 
   return srt.join("\n");
-}
-
-function filterLinesByKeywords(splitSubtitleLines, keywordList) {
-  // 过滤掉分割后的关键词
-  let filterLines = splitSubtitleLines.filter((line) => {
-    return (
-      keywordList.filter((keyword) => keyword.includes(line.text.trim()))
-        .length === 0
-    );
-  });
-  return filterLines;
-}
-
-function mergeSubtitleLines(subtitleLines) {
-  const mergedLines = [];
-
-  for (let i = 0; i < subtitleLines.length; i++) {
-    const currentLine = subtitleLines[i];
-
-    if (i === 0) {
-      mergedLines.push(currentLine);
-    } else {
-      const prevLine = mergedLines[mergedLines.length - 1];
-
-      if (prevLine.endTime === currentLine.startTime) {
-        prevLine.text += "" + currentLine.text;
-        prevLine.endTime = currentLine.endTime;
-      } else {
-        mergedLines.push(currentLine);
-      }
-    }
-  }
-
-  return mergedLines;
 }
 
 // 格式化时间为 SRT 格式
@@ -201,7 +158,7 @@ function formatNumber(number, minimumIntegerDigits = 2) {
 const jsonData = readJsonFromFile("./draft_info.json");
 
 if (jsonData) {
-  const keywordList = ["买的", "黑色的", "好不好", "然后呢", "呃", "对"];
+  const keywordList = ["买的", "黑色的", "好不好", "然后呢", "呃"];
   const srtData = jsonToSrt(jsonData, keywordList);
   console.log(srtData);
 }
