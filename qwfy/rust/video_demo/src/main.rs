@@ -68,7 +68,17 @@ impl SegmentExtractor for JsonSegmentExtractor {
 struct VideoSplitter;
 
 impl VideoSplitter {
-    fn split_video_segments(&self, file_path: &str, segments: Vec<Segment>) -> std::io::Result<()> {
+    fn split_video_segments(
+        &self,
+        file_path: &str,
+        segments_file_path: &str,
+        segments: Vec<Segment>,
+    ) -> std::io::Result<()> {
+        let extension = Path::new(segments_file_path)
+            .extension()
+            .and_then(|s| s.to_str())
+            .unwrap_or("unknown");
+
         segments
             .par_iter()
             .enumerate()
@@ -81,18 +91,14 @@ impl VideoSplitter {
                 let dir_path = Path::new(file_path).parent().unwrap();
                 println!("dir_path: {:?}", dir_path);
 
-                let output_dir = if segment.keyword.contains(" ") {
-                    dir_path.join(filename).join("srt")
-                } else {
-                    dir_path.join(filename).join("json")
-                };
+                let output_dir = dir_path.join(filename).join(extension);
 
                 std::fs::create_dir_all(&output_dir)?;
 
                 let output_file = output_dir.join(format!(
                     "{}_segment_{:02}_{}.mp4",
                     filename,
-                    index,
+                    index + 1,
                     segment.keyword.replace(" ", "_")
                 ));
 
@@ -127,8 +133,14 @@ fn main() {
     // let file_path = "./data/example.mp4";
     // let segments_file_path = "./data/example.json";
 
-    let file_path = "../../../../../Movies/3月21日-mix-墨镜.mp4";
-    let segments_file_path = "../../../../../Movies/3月21日-mix-墨镜_keyword.json";
+    // let file_path = "../../../../../Movies/3月22日-如故.mp4";
+    // let segments_file_path = "../../../../../Movies/3月22日-如故_keyword.json";
+
+    // let file_path = "../../../../../Movies/aaResult.mp4";
+    // let segments_file_path = "../../../../../Movies/aaResult.srt";
+
+    let file_path = "../../../../../Movies/bb.mp4";
+    let segments_file_path = "../../../../../Movies/bb_keyword.json";
 
     match Path::new(&segments_file_path)
         .extension()
@@ -141,7 +153,7 @@ fn main() {
             let segments = json_extractor.extract_segments();
             let video_splitter = VideoSplitter;
             video_splitter
-                .split_video_segments(file_path, segments)
+                .split_video_segments(file_path, segments_file_path, segments)
                 .expect("Failed to split video based on .json file");
         }
         Some("srt") => {
@@ -151,7 +163,7 @@ fn main() {
             let segments = srt_extractor.extract_segments();
             let video_splitter = VideoSplitter;
             video_splitter
-                .split_video_segments(file_path, segments)
+                .split_video_segments(file_path, segments_file_path, segments)
                 .expect("Failed to split video based on .srt file");
         }
         _ => println!("Unsupported file format."),
