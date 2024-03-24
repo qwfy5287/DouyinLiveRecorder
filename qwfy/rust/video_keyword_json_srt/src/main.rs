@@ -43,7 +43,7 @@ impl SegmentExtractor for SrtSegmentExtractor {
                 }
 
                 segments.push(Segment {
-                    keyword: format!("Segment {:02}", segments.len() + 1),
+                    keyword: format!("Segment {:03}", segments.len() + 1),
                     text,
                     start_time,
                     end_time,
@@ -97,7 +97,7 @@ impl VideoSplitter {
                 std::fs::create_dir_all(&output_dir)?;
 
                 let output_file = output_dir.join(format!(
-                    "{}_segment_{:02}_{}.mp4",
+                    "{}_segment_{:03}_{}.mp4",
                     filename,
                     index + 1,
                     segment.keyword.replace(" ", "_")
