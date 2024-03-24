@@ -117,6 +117,8 @@ function jsonToSrt(json, keywordList) {
           }
         });
 
+        // console.log(splitSubtitleLines);
+
         // 过滤掉分割后的关键词
         let filterLines = filterLinesByKeywords(
           splitSubtitleLines,
@@ -125,6 +127,7 @@ function jsonToSrt(json, keywordList) {
 
         // 合并分割后的相邻的关键词
         let mergedLines = mergeSubtitleLines(filterLines);
+        // console.log(mergedLines);
 
         // 将分割后的字幕内容转换为 SRT 格式
         mergedLines.forEach((line) => {
