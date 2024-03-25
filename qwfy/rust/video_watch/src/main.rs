@@ -120,6 +120,7 @@ impl Observer for Mp4Observer {
 
 fn main() {
     let downloads_path = "../../../downloads/抖音直播";
+    // let downloads_path = "/Volumes/qwfy-wd-2t/抖音直播";
 
     // 在开始监控之前，重命名目录下现有的所有.mp4文件
     rename_existing_files(Path::new(&downloads_path)).expect("Failed to rename existing files");

@@ -127,8 +127,12 @@ fn main() {
     // let path = "../../../../../douyinCut/魏老板现货号_2024-03-23";
     // let output_dir = "../../../../../douyinCut/魏老板现货号_2024-03-23_output";
   
-    let path = "../../../../../douyin-cut/刘11生活号_2024-03-23";
-    let output_dir = "../../../../../douyin-thumb/抖音直播/刘11生活号/刘11生活号_2024-03-23_thumb";
+    // let path = "../../../../../douyin-cut/刘11生活号_2024-03-23";
+    // let output_dir = "../../../../../douyin-thumb/抖音直播/刘11生活号/刘11生活号_2024-03-23_thumb";
+  
+
+    let path = "/Volumes/qwfy-wd-2t/抖音直播/@魏老板私服_2024-03-25";
+    let output_dir = "../../../../../douyin-thumb/抖音直播/@魏老板私服/@魏老板私服_2024-03-25_thumb";
   
   
     
