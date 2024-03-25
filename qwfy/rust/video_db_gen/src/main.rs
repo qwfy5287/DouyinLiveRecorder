@@ -119,7 +119,8 @@ fn traverse_directory(dir: &Path, file_filter: &dyn FileFilter, file_infos: &mut
 }
 
 fn main() {
-    let root_dir = Path::new("../../../downloads");
+    // let root_dir = Path::new("../../../downloads");
+    let root_dir = Path::new("/Users/qwfy/douyin-thumb");
     let mut file_infos: Vec<FileInfo> = Vec::new();
     let mut id_counter = 1;
     let file_filter = JpgFilter;

@@ -124,8 +124,11 @@ fn process_directory(dir_path: &str, output_dir: &str, interval: f64) {
 
 fn main() {
     // let path = "../../../../../douyinCut/@魏老板私服/@魏老板私服_2024-03-18/@魏老板私服_2024-03-18_07-33-23.mp4";
-    let path = "../../../../../douyinCut/魏老板现货号_2024-03-23";
-    let output_dir = "../../../../../douyinCut/魏老板现货号_2024-03-23_output";
+    // let path = "../../../../../douyinCut/魏老板现货号_2024-03-23";
+    // let output_dir = "../../../../../douyinCut/魏老板现货号_2024-03-23_output";
+  
+    let path = "../../../../../douyin-cut/刘11生活号_2024-03-23";
+    let output_dir = "../../../../../douyin-thumb/抖音直播/刘11生活号/刘11生活号_2024-03-23_thumb";
   
   
     
