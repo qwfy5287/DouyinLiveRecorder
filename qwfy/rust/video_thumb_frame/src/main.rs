@@ -163,11 +163,23 @@ fn sync_thumbnails_to_server(output_root: &str, server_user: &str, server_host: 
 
 #[tokio::main]
 async fn main() {
-    let login_result = login("18250833087".to_string(), "qwfy@123!4561".to_string()).await;
+    let login_result = login("18250833087".to_string(), "qwfy@123!456".to_string()).await;
     handle_login_result(login_result);
 
-    let input_root = "/Users/qwfy/douyin-cut";
-    let output_root = "/Users/qwfy/douyin-thumb";
+    let args: Vec<String> = std::env::args().collect();
+
+    let input_root = if args.len() > 1 {
+        &args[1]
+    } else {
+        "/Users/qwfy/douyin-cut"
+    };
+
+    let output_root = if args.len() > 2 {
+        &args[2]
+    } else {
+        "/Users/qwfy/douyin-thumb"
+    };
+
     let interval = 30.0; // 每隔 30 秒提取一帧
 
     let server_user = "root";
@@ -176,6 +188,5 @@ async fn main() {
     let server_password = "huaweiyundouyinlive@123";
 
     process_directory(input_root, input_root, output_root, interval);
-
     sync_thumbnails_to_server(output_root, server_user, server_host, server_path, server_password);
 }
