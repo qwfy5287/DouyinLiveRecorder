@@ -7,3 +7,5 @@ edition = "2021"
 
 [dependencies]
 rayon = "1.9.0"
+tokio = { version = "1.0", features = ["full"] }
+video_login = { path = "../video_login" }

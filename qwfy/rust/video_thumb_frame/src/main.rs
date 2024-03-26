@@ -5,6 +5,9 @@ use std::fs::{create_dir_all, read_dir};
 use std::path::Path;
 use rayon::prelude::*;
 
+use video_login::common::login_common::{login, handle_login_result};
+
+
 fn seconds_to_timestamp(seconds: u64) -> String {
     format!(
         "{:02}_{:02}_{:02}",
@@ -158,7 +161,11 @@ fn sync_thumbnails_to_server(output_root: &str, server_user: &str, server_host: 
     }
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
+    let login_result = login("18250833087".to_string(), "qwfy@123!4561".to_string()).await;
+    handle_login_result(login_result);
+
     let input_root = "/Users/qwfy/douyin-cut";
     let output_root = "/Users/qwfy/douyin-thumb";
     let interval = 30.0; // 每隔 30 秒提取一帧
