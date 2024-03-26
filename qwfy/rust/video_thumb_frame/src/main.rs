@@ -130,14 +130,6 @@ fn process_directory(dir_path: &str, input_root: &str, output_root: &str, interv
     }
 }
 
-// fn main() {
-//     let input_root = "/Users/qwfy/douyin-cut";
-//     let output_root = "/Users/qwfy/douyin-thumb";
-//     let interval = 30.0; // 每隔 30 秒提取一帧
-
-//     process_directory(input_root, input_root, output_root, interval);
-// }
-
 fn sync_thumbnails_to_server(output_root: &str, server_user: &str, server_host: &str, server_path: &str, password: &str) {
     let status = Command::new("sshpass")
         .args(&[
