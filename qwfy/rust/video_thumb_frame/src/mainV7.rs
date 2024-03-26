@@ -1,5 +1,3 @@
-// qwfy/rust/video_thumb_frame/src/main.rs
-
 use std::process::Command;
 use std::fs::{create_dir_all, read_dir};
 use std::path::Path;
@@ -100,47 +98,7 @@ fn process_video(video_path: &str, output_dir: &str, interval: f64) {
     }
 }
 
-// fn process_directory(dir_path: &str, output_dir: &str, interval: f64) {
-//     if let Ok(entries) = read_dir(dir_path) {
-//         for entry in entries {
-//             if let Ok(entry) = entry {
-//                 let path = entry.path();
-//                 if path.is_file() {
-//                     if let Some(ext) = path.extension() {
-//                         if ext == "mp4" || ext == "avi" || ext == "mov" {
-//                             let video_path = path.to_str().unwrap();
-//                             let video_file_name = path.file_stem().unwrap().to_str().unwrap();
-//                             let video_output_dir = format!("{}/{}_thumb", output_dir, video_file_name);
-//                             process_video(video_path, &video_output_dir, interval);
-//                         }
-//                     }
-//                 } else if path.is_dir() {
-//                     let subdir_path = path.to_str().unwrap();
-//                     let subdir_output_dir = format!("{}/{}", output_dir, path.file_name().unwrap().to_str().unwrap());
-//                     process_directory(subdir_path, &subdir_output_dir, interval);
-//                 }
-//             }
-//         }
-//     }
-// }
-
-// fn main() {
-//     let output_dir_after_fix = "_thumb";
-//     let path = "/Users/qwfy/douyin-cut/抖音直播/@魏老板私服/@魏老板私服_2024-03-25";
-//     let output_dir = "/Users/qwfy/douyin-thumb/抖音直播/@魏老板私服/@魏老板私服_2024-03-25"+output_dir_after_fix;
-    
-//     let interval = 30.0; // 每隔 60 秒提取一帧
-
-//     if Path::new(path).is_file() {
-//         process_video(path, output_dir, interval);
-//     } else if Path::new(path).is_dir() {
-//         process_directory(path, output_dir, interval);
-//     } else {
-//         eprintln!("Invalid path: {}", path);
-//     }
-// }
-
-fn process_directory(dir_path: &str, input_root: &str, output_root: &str, interval: f64) {
+fn process_directory(dir_path: &str, output_dir: &str, interval: f64) {
     if let Ok(entries) = read_dir(dir_path) {
         for entry in entries {
             if let Ok(entry) = entry {
@@ -149,14 +107,15 @@ fn process_directory(dir_path: &str, input_root: &str, output_root: &str, interv
                     if let Some(ext) = path.extension() {
                         if ext == "mp4" || ext == "avi" || ext == "mov" {
                             let video_path = path.to_str().unwrap();
-                            let relative_path = path.strip_prefix(input_root).unwrap();
-                            let output_dir = format!("{}/{}_thumb", output_root, relative_path.with_extension("").to_str().unwrap());
-                            process_video(video_path, &output_dir, interval);
+                            let video_file_name = path.file_stem().unwrap().to_str().unwrap();
+                            let video_output_dir = format!("{}/{}_thumb", output_dir, video_file_name);
+                            process_video(video_path, &video_output_dir, interval);
                         }
                     }
                 } else if path.is_dir() {
                     let subdir_path = path.to_str().unwrap();
-                    process_directory(subdir_path, input_root, output_root, interval);
+                    let subdir_output_dir = format!("{}/{}", output_dir, path.file_name().unwrap().to_str().unwrap());
+                    process_directory(subdir_path, &subdir_output_dir, interval);
                 }
             }
         }
@@ -164,9 +123,22 @@ fn process_directory(dir_path: &str, input_root: &str, output_root: &str, interv
 }
 
 fn main() {
-    let input_root = "/Users/qwfy/douyin-cut";
-    let output_root = "/Users/qwfy/douyin-thumb";
-    let interval = 30.0; // 每隔 30 秒提取一帧
 
-    process_directory(input_root, input_root, output_root, interval);
+    // let path = "/Users/qwfy/douyin-cut/抖音直播/@魏老板私服/@魏老板私服_2024-03-25";
+    // let output_dir = "/Users/qwfy/douyin-thumb/抖音直播/@魏老板私服/@魏老板私服_2024-03-25_thumb";
+    
+    let path = "/Users/qwfy/douyin-cut/抖音直播/@魏老板私服/@魏老板私服_2024-03-25";
+    let output_dir = "/Users/qwfy/douyin-thumb/抖音直播/@魏老板私服/@魏老板私服_2024-03-25_thumb";
+    
+
+    // let output_dir = "output";
+    let interval = 30.0; // 每隔 60 秒提取一帧
+
+    if Path::new(path).is_file() {
+        process_video(path, output_dir, interval);
+    } else if Path::new(path).is_dir() {
+        process_directory(path, output_dir, interval);
+    } else {
+        eprintln!("Invalid path: {}", path);
+    }
 }
