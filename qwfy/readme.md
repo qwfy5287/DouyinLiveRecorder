@@ -19,3 +19,9 @@ qwfy/rust/video_watch
 
 ## 监控 抖音主播网页 是否有直播
 qwfy/rust/video_monitor
+
+## 复制缩略图到服务器
+
+```bash
+rsync -avz /Users/qwfy/douyin-thumb/ root@124.70.131.130:/var/www/thumb/
+```
