@@ -1,47 +1,5 @@
-// // ./common/login_common.rs
-// use machine_uid::get;
-// use reqwest::Client;
-// use serde::{Deserialize, Serialize};
-
-// #[derive(Debug, Serialize, Deserialize)]
-// pub struct LoginRequest {
-//     pub phone: String,
-//     pub password: String,
-//     pub device_id: String,
-// }
-
-// #[derive(Debug, Deserialize)]
-// pub struct LoginResponse {
-//     pub success: bool,
-//     pub code: u32,
-//     pub message: String,
-//     pub count: u32,
-//     pub records: Vec<serde_json::Value>,
-// }
-
-// pub async fn login(phone: String, password: String) -> Result<LoginResponse, Box<dyn std::error::Error>> {
-//     let client = Client::new();
-//     let login_url = "http://localhost:20248/douyin-user/login";
-    
-//     // 使用 machine-uid 获取设备 ID
-//     let device_id = get().map_err(|e| format!("Failed to get device ID: {}", e))?;
-    
-//     let login_request = LoginRequest {
-//         phone,
-//         password,
-//         device_id,
-//     };
-//     let response = client
-//         .post(login_url)
-//         .header("Content-Type", "application/json")
-//         .body(serde_json::to_string(&login_request)?)
-//         .send()
-//         .await?;
-//     let login_response: LoginResponse = response.json().await?;
-//     Ok(login_response)
-// }
-
 // ./common/login_common.rs
+
 use machine_uid::get;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};

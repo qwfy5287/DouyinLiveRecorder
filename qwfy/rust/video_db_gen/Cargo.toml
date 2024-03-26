@@ -10,3 +10,6 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 rayon = "1.6.1"
 anyhow = "1.0"
+reqwest = { version = "0.11", features = ["blocking","json"] }
+tokio = { version = "1.0", features = ["full"] }
+video_login = { path = "../video_login" }

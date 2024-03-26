@@ -121,40 +121,50 @@ fn traverse_directory(dir: &Path, file_filter: &dyn FileFilter, file_infos: &mut
     }
 }
 
-
 #[tokio::main]
 async fn main() {
-    let login_result = login("18250833087".to_string(), "qwfy@123!456".to_string()).await;
+    let login_result = login("18250833087".to_string(), "123456".to_string()).await;
     handle_login_result(login_result);
 
-    let args: Vec<String> = std::env::args().collect();
-    let root_dir = if args.len() > 1 {
-        Path::new(&args[1])
-    } else {
-        Path::new("/Users/qwfy/douyin-thumb")
-    };
-
+    // let root_dir = Path::new("../../../downloads");
+    let root_dir = Path::new("/Users/qwfy/douyin-thumb");
     let mut file_infos: Vec<FileInfo> = Vec::new();
     let mut id_counter = 1;
     let file_filter = JpgFilter;
     let file_sorter = FileNameAscSorter;
-    traverse_directory(root_dir, &file_filter, &mut file_infos, &mut id_counter, &[String::new(), String::new(), String::new(), String::new()]);
+    
+    traverse_directory(root_dir, &file_filter, &mut file_infos, &mut id_counter, 
+                       &[String::new(), String::new(), String::new(), String::new()]);
+                       
     file_sorter.sort(&mut file_infos);
+    
     let json = serde_json::to_string_pretty(&file_infos).unwrap();
-
-    // 根据不同的运行环境决定输出文件路径
-    let output_path = if cfg!(debug_assertions) {
-        // cargo run 时
-        let output_file = "output.json";
-        std::path::Path::new(output_file).to_path_buf()
-    } else {
-        // 运行打包的可执行文件时
-        let current_exe = std::env::current_exe().expect("无法获取当前可执行文件路径");
-        let current_dir = current_exe.parent().expect("无法获取当前目录");
-        current_dir.join("output.json")
-    };
+    // println!("{}", json);
 
     // 将JSON写入文件
-    fs::write(&output_path, json).expect("无法写入文件");
-    println!("JSON已保存到 {:?}", output_path);
+    let output_file = "output.json";
+    fs::write(output_file, json).expect("无法写入文件");
+    println!("JSON已保存到 {}", output_file);
+
+    // // 执行命令行 ls -l output.json，查看文件大小。
+    // let output = std::process::Command::new("ls")
+    //     .arg("-l")
+    //     .arg(output_file)
+    //     .output()
+    //     .expect("Failed to execute command");
+    // println!("{}", String::from_utf8_lossy(&output.stdout));
+
 }
+
+
+
+// use video_login::common::login_common::{login, handle_login_result};
+
+// #[tokio::main]
+// async fn main() {
+//     let login_result = login("18250833087".to_string(), "1234561".to_string()).await;
+//     handle_login_result(login_result);
+
+//     // 登录成功后，继续执行其他操作...
+//     println!("world!");
+// }
