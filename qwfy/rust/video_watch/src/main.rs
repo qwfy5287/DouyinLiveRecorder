@@ -105,7 +105,8 @@ impl Observer for Mp4Observer {
                                 Ok(duration) => {
                                     // mp4文件写入完成后，才能获取到视频时长，否则都是 0
                                     if duration.as_secs() > 5 {
-                                        process_video(path);
+                                        // TODO: 先不自动生成缩略图
+                                        // process_video(path);
                                     }
                                 }
                                 Err(e) => eprintln!("Error getting video duration: {:?}", e),
