@@ -127,10 +127,48 @@ fn process_directory(dir_path: &str, input_root: &str, output_root: &str, interv
     }
 }
 
+// fn main() {
+//     let input_root = "/Users/qwfy/douyin-cut";
+//     let output_root = "/Users/qwfy/douyin-thumb";
+//     let interval = 30.0; // 每隔 30 秒提取一帧
+
+//     process_directory(input_root, input_root, output_root, interval);
+// }
+
+fn sync_thumbnails_to_server(output_root: &str, server_user: &str, server_host: &str, server_path: &str, password: &str) {
+    let status = Command::new("sshpass")
+        .args(&[
+            "-p",
+            password,
+            "rsync",
+            "-avz",
+            "--progress",
+            "-e",
+            "ssh -o StrictHostKeyChecking=no",
+            output_root,
+            &format!("{}@{}:{}", server_user, server_host, server_path),
+        ])
+        .status()
+        .expect("Failed to execute sshpass command");
+
+    if status.success() {
+        println!("Thumbnails synced to server successfully");
+    } else {
+        eprintln!("Failed to sync thumbnails to server");
+    }
+}
+
 fn main() {
     let input_root = "/Users/qwfy/douyin-cut";
     let output_root = "/Users/qwfy/douyin-thumb";
     let interval = 30.0; // 每隔 30 秒提取一帧
 
+    let server_user = "root";
+    let server_host = "124.70.131.130";
+    let server_path = "/var/www/thumb/";
+    let server_password = "huaweiyundouyinlive@123";
+
     process_directory(input_root, input_root, output_root, interval);
+
+    sync_thumbnails_to_server(output_root, server_user, server_host, server_path, server_password);
 }
