@@ -84,7 +84,7 @@
         "album_image": "",
         "blur": 0,
         "color": "",
-        "id": "DD15770C-9A26-4304-A768-C581B6CF539B",
+        "id": "C1DB374C-2C57-4129-ABE3-72CF1819F162",
         "image": "",
         "image_id": "",
         "image_name": "",
@@ -96,7 +96,7 @@
         "album_image": "",
         "blur": 0,
         "color": "",
-        "id": "A580ED3C-E7A1-4497-90B7-70A439302378",
+        "id": "11E84888-A5E0-41A1-A163-470731CCB499",
         "image": "",
         "image_id": "",
         "image_name": "",
@@ -108,7 +108,7 @@
         "album_image": "",
         "blur": 0,
         "color": "",
-        "id": "D8C30532-B67C-453D-8B4B-E1000FF916DE",
+        "id": "D6302FF4-7E79-4003-9B4B-F474AE3B0A36",
         "image": "",
         "image_id": "",
         "image_name": "",
@@ -120,7 +120,7 @@
         "album_image": "",
         "blur": 0,
         "color": "",
-        "id": "AA230C59-F714-4587-BBDF-D33851A4F92C",
+        "id": "CD3FE005-A513-4A1F-A665-E8E3A703ACA3",
         "image": "",
         "image_id": "",
         "image_name": "",
@@ -132,7 +132,7 @@
         "album_image": "",
         "blur": 0,
         "color": "",
-        "id": "7B03303A-188D-4FCD-9E27-66EF4131A057",
+        "id": "11B01342-584E-45BD-92D5-AFD3601B5A57",
         "image": "",
         "image_id": "",
         "image_name": "",
@@ -174,31 +174,31 @@
       },
       {
         "audio_channel_mapping": 0,
-        "id": "2069EED8-700E-4F7A-9956-A53400C7FD9C",
+        "id": "82CC3974-C0E1-4145-AAED-99DF22AAE989",
         "is_config_open": false,
         "type": "none"
       },
       {
         "audio_channel_mapping": 0,
-        "id": "36423B6E-49C6-466C-828F-C0E2D375708B",
+        "id": "AC0D0BAB-E973-40F9-9694-1D410C1AB78B",
         "is_config_open": false,
         "type": "none"
       },
       {
         "audio_channel_mapping": 0,
-        "id": "4A7BD527-C6E6-4164-9CAD-2CD9E405B535",
+        "id": "71FDE11B-F6D2-4CDD-906A-2AC25A925479",
         "is_config_open": false,
         "type": "none"
       },
       {
         "audio_channel_mapping": 0,
-        "id": "6F3D0A90-F45B-4C81-943C-0CC6BC39F84D",
+        "id": "2FC1ECCB-3C49-4C8B-9180-E6A15F0E5ABB",
         "is_config_open": false,
         "type": "none"
       },
       {
         "audio_channel_mapping": 0,
-        "id": "2D87BB00-CF4F-4AD3-B53B-2D4FAB62CC13",
+        "id": "729E21BA-9514-46B5-BA84-DA0FEFB8151D",
         "is_config_open": false,
         "type": "none"
       }
@@ -213,35 +213,35 @@
       },
       {
         "curve_speed": null,
-        "id": "5B751418-0423-4B83-880D-C278672B1139",
+        "id": "5544081B-3F9D-4D32-8E98-41C94746CB7C",
         "mode": 0,
         "speed": 1,
         "type": "speed"
       },
       {
         "curve_speed": null,
-        "id": "2DA0A44D-DDFA-4995-BBF9-4ED1BD765DB9",
+        "id": "E035ECCF-A52C-4E23-99BF-58974CE72EF9",
         "mode": 0,
         "speed": 1,
         "type": "speed"
       },
       {
         "curve_speed": null,
-        "id": "EBCF2619-7964-4CC5-AFA5-C4193F9BBD12",
+        "id": "6E7C4988-E2F3-4626-8BE6-DF69AA3CC9A8",
         "mode": 0,
         "speed": 1,
         "type": "speed"
       },
       {
         "curve_speed": null,
-        "id": "F567D5E2-B159-4C8F-99DB-637F3AE55F28",
+        "id": "93E049DD-9935-444E-8C4D-82732294D8E7",
         "mode": 0,
         "speed": 1,
         "type": "speed"
       },
       {
         "curve_speed": null,
-        "id": "663C01D9-C890-4688-826D-B4018C8B8D1F",
+        "id": "6B1A87D9-612F-4706-B51A-683BEF23BC24",
         "mode": 0,
         "speed": 1,
         "type": "speed"
@@ -362,7 +362,7 @@
         "freeze": null,
         "has_audio": true,
         "height": 1920,
-        "id": "2A59F12B-9884-444F-9171-FE8EBCD69D56",
+        "id": "B904BDF4-22FB-44E3-9FE3-E6EA795E4A68",
         "intensifies_audio_path": "",
         "intensifies_path": "",
         "is_ai_generate_content": false,
@@ -443,7 +443,7 @@
         "freeze": null,
         "has_audio": true,
         "height": 1920,
-        "id": "8BE83FE4-1978-4164-BDE3-A55FFFDAE2E8",
+        "id": "5936AB6F-2700-4EB7-9084-83BBB10A895D",
         "intensifies_audio_path": "",
         "intensifies_path": "",
         "is_ai_generate_content": false,
@@ -524,7 +524,7 @@
         "freeze": null,
         "has_audio": true,
         "height": 1920,
-        "id": "542B1094-E7A4-43B9-85EC-2E184D9136F5",
+        "id": "FF01C68D-D0D7-45CB-B63B-C05D7C38C32B",
         "intensifies_audio_path": "",
         "intensifies_path": "",
         "is_ai_generate_content": false,
@@ -605,7 +605,7 @@
         "freeze": null,
         "has_audio": true,
         "height": 1920,
-        "id": "78084506-02AF-4C82-96B9-5BEA8CBC4C11",
+        "id": "9FD8A32E-E7F3-4C52-9114-CC762FB4F1BD",
         "intensifies_audio_path": "",
         "intensifies_path": "",
         "is_ai_generate_content": false,
@@ -686,7 +686,7 @@
         "freeze": null,
         "has_audio": true,
         "height": 1920,
-        "id": "825780B5-AF5D-46DE-BC28-64FF216F2639",
+        "id": "FEE4AA2C-1C33-4C3D-8C7F-D72AD6D34582",
         "intensifies_audio_path": "",
         "intensifies_path": "",
         "is_ai_generate_content": false,
@@ -754,35 +754,35 @@
       },
       {
         "choice": 0,
-        "id": "198F7A01-1A93-43E4-AC02-786FD6DE487A",
+        "id": "70DAF50D-ECBD-491E-B196-C1D79D3FA8AF",
         "production_path": "",
         "time_range": null,
         "type": "vocal_separation"
       },
       {
         "choice": 0,
-        "id": "E74FA615-D474-4FEC-AC99-495E36B54749",
+        "id": "134C27B4-EEB6-47E8-A084-F9E1236927AD",
         "production_path": "",
         "time_range": null,
         "type": "vocal_separation"
       },
       {
         "choice": 0,
-        "id": "12988005-E85E-4C6C-B98C-5F7B72734911",
+        "id": "0E072FBE-9AC9-43E2-9630-3A9B61D3D43B",
         "production_path": "",
         "time_range": null,
         "type": "vocal_separation"
       },
       {
         "choice": 0,
-        "id": "B32F0F5A-DA81-4B37-A696-D9C405F982A9",
+        "id": "4B19E947-7FD2-47B6-98E1-2A28F8B1BDFE",
         "production_path": "",
         "time_range": null,
         "type": "vocal_separation"
       },
       {
         "choice": 0,
-        "id": "540824AB-C41F-4EF9-B25B-BC41B67492EC",
+        "id": "656360F7-B4CF-431A-9E25-6BCF585C1622",
         "production_path": "",
         "time_range": null,
         "type": "vocal_separation"
@@ -896,7 +896,7 @@
     {
       "attribute": 0,
       "flag": 2,
-      "id": "4FC8713A-1E48-4671-9AF0-805DDD7EA98C",
+      "id": "AE430EC8-3C2D-4A8D-8561-430E022F2A1C",
       "is_default_name": true,
       "name": "",
       "segments": [
@@ -927,10 +927,10 @@
           "enable_lut": true,
           "enable_smart_color_adjust": false,
           "extra_material_refs": [
-            "7B03303A-188D-4FCD-9E27-66EF4131A057",
-            "2D87BB00-CF4F-4AD3-B53B-2D4FAB62CC13",
-            "663C01D9-C890-4688-826D-B4018C8B8D1F",
-            "540824AB-C41F-4EF9-B25B-BC41B67492EC"
+            "11B01342-584E-45BD-92D5-AFD3601B5A57",
+            "729E21BA-9514-46B5-BA84-DA0FEFB8151D",
+            "6B1A87D9-612F-4706-B51A-683BEF23BC24",
+            "656360F7-B4CF-431A-9E25-6BCF585C1622"
           ],
           "group_id": "",
           "hdr_settings": {
@@ -938,13 +938,13 @@
             "mode": 1,
             "nits": 1000
           },
-          "id": "DF17A814-F77E-4F29-928A-C14ACBC1BA57",
+          "id": "806193E6-EA4E-400B-BC7C-228476B5FDA4",
           "intensifies_audio": false,
           "is_placeholder": false,
           "is_tone_modify": false,
           "keyframe_refs": [],
           "last_nonzero_volume": 1,
-          "material_id": "825780B5-AF5D-46DE-BC28-64FF216F2639",
+          "material_id": "FEE4AA2C-1C33-4C3D-8C7F-D72AD6D34582",
           "render_index": 2,
           "responsive_layout": {
             "enable": false,

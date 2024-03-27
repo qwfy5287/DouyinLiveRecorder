@@ -135,9 +135,12 @@ if (draftJson) {
   let json = srtStringToJson(strString);
 
   json.forEach((item) => {
+    console.log(item.start_time);
     let start_time = convertSubtitleTimeToMicroseconds(item.start_time);
     let end_time = convertSubtitleTimeToMicroseconds(item.end_time);
     let duration = end_time - start_time;
+    console.log(start_time);
+    console.log(duration);
     console.log(item);
     // 便利生成新的
     splitVideo(draftJson, newTrackItem, start_time, duration);
