@@ -35,6 +35,27 @@ export function writeJsonFile(filePath, data) {
   }
 }
 
+// 读取 SRT 字幕文件
+export function readSrtFile(filePath) {
+  try {
+    const data = fs.readFileSync(filePath, "utf8");
+    return data;
+  } catch (error) {
+    console.error("Error reading SRT file:", error);
+    return null;
+  }
+}
+
+// 写入 SRT 字幕文件
+export function writeSrtFile(filePath, srtData) {
+  try {
+    fs.writeFileSync(filePath, srtData, "utf8");
+    console.log("SRT file updated successfully.");
+  } catch (error) {
+    console.error("Error writing SRT file:", error);
+  }
+}
+
 /**
  * 生成 UUID
  * @returns {string} UUID

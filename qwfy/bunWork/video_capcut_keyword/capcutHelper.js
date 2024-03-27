@@ -1,4 +1,5 @@
 import { doFlow, jsonToSrtString, srtStringToJson } from "./capcut.common";
+import { writeSrtFile } from "../video_capcut/common/video.common";
 
 const fs = require("fs");
 
@@ -208,8 +209,12 @@ function formatNumber(number, minimumIntegerDigits = 2) {
   return number.toString().padStart(minimumIntegerDigits, "0");
 }
 
+let sourceFile =
+  "/Users/qwfy/Movies/JianyingPro/User Data/Projects/com.lveditor.draft/3月27日-cut-small (2)/draft_info.json";
+
 // 读取 JSON 文件
-const jsonData = readJsonFromFile("./draft_info.json");
+// const jsonData = readJsonFromFile("./draft_info.json");
+const jsonData = readJsonFromFile(sourceFile);
 
 if (jsonData) {
   // console.log(jsonData);
@@ -240,6 +245,8 @@ if (jsonData) {
 
   console.log("🚀 ~ srt:");
   console.log(srt);
+
+  writeSrtFile("output.srt", srt);
 
   // console.log(json);
 
