@@ -8,7 +8,7 @@ import {
   sortSpecialties,
 } from "./subtitle.common";
 
-export const srtStringToJson = (srtString: string): string => {
+export const srtStringToJson = (srtString) => {
   let result = null;
 
   const srtLines = srtString.trim().split("\n");
@@ -33,11 +33,11 @@ export const srtStringToJson = (srtString: string): string => {
   return result;
 };
 
-export const jsonToSrtString = (subtitleJson): string => {
+export const jsonToSrtString = (subtitleJson) => {
   const jsonData = subtitleJson;
   let srtString = "";
 
-  jsonData.forEach((item: any) => {
+  jsonData.forEach((item) => {
     srtString += `${item.index}\n`;
     srtString += `${item.start_time} --> ${item.end_time}\n`;
     srtString += `${item.text}\n\n`;
