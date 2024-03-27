@@ -84,7 +84,55 @@
         "album_image": "",
         "blur": 0,
         "color": "",
-        "id": "EC2855EA-412A-4E13-A456-886824AB29DE",
+        "id": "DD15770C-9A26-4304-A768-C581B6CF539B",
+        "image": "",
+        "image_id": "",
+        "image_name": "",
+        "source_platform": 0,
+        "team_id": "",
+        "type": "canvas_color"
+      },
+      {
+        "album_image": "",
+        "blur": 0,
+        "color": "",
+        "id": "A580ED3C-E7A1-4497-90B7-70A439302378",
+        "image": "",
+        "image_id": "",
+        "image_name": "",
+        "source_platform": 0,
+        "team_id": "",
+        "type": "canvas_color"
+      },
+      {
+        "album_image": "",
+        "blur": 0,
+        "color": "",
+        "id": "D8C30532-B67C-453D-8B4B-E1000FF916DE",
+        "image": "",
+        "image_id": "",
+        "image_name": "",
+        "source_platform": 0,
+        "team_id": "",
+        "type": "canvas_color"
+      },
+      {
+        "album_image": "",
+        "blur": 0,
+        "color": "",
+        "id": "AA230C59-F714-4587-BBDF-D33851A4F92C",
+        "image": "",
+        "image_id": "",
+        "image_name": "",
+        "source_platform": 0,
+        "team_id": "",
+        "type": "canvas_color"
+      },
+      {
+        "album_image": "",
+        "blur": 0,
+        "color": "",
+        "id": "7B03303A-188D-4FCD-9E27-66EF4131A057",
         "image": "",
         "image_id": "",
         "image_name": "",
@@ -126,7 +174,31 @@
       },
       {
         "audio_channel_mapping": 0,
-        "id": "D2E6B43C-017E-483E-9C36-26CEB2AD6320",
+        "id": "2069EED8-700E-4F7A-9956-A53400C7FD9C",
+        "is_config_open": false,
+        "type": "none"
+      },
+      {
+        "audio_channel_mapping": 0,
+        "id": "36423B6E-49C6-466C-828F-C0E2D375708B",
+        "is_config_open": false,
+        "type": "none"
+      },
+      {
+        "audio_channel_mapping": 0,
+        "id": "4A7BD527-C6E6-4164-9CAD-2CD9E405B535",
+        "is_config_open": false,
+        "type": "none"
+      },
+      {
+        "audio_channel_mapping": 0,
+        "id": "6F3D0A90-F45B-4C81-943C-0CC6BC39F84D",
+        "is_config_open": false,
+        "type": "none"
+      },
+      {
+        "audio_channel_mapping": 0,
+        "id": "2D87BB00-CF4F-4AD3-B53B-2D4FAB62CC13",
         "is_config_open": false,
         "type": "none"
       }
@@ -141,7 +213,35 @@
       },
       {
         "curve_speed": null,
-        "id": "0E9B87E3-BD76-44BB-84DE-BE546132154C",
+        "id": "5B751418-0423-4B83-880D-C278672B1139",
+        "mode": 0,
+        "speed": 1,
+        "type": "speed"
+      },
+      {
+        "curve_speed": null,
+        "id": "2DA0A44D-DDFA-4995-BBF9-4ED1BD765DB9",
+        "mode": 0,
+        "speed": 1,
+        "type": "speed"
+      },
+      {
+        "curve_speed": null,
+        "id": "EBCF2619-7964-4CC5-AFA5-C4193F9BBD12",
+        "mode": 0,
+        "speed": 1,
+        "type": "speed"
+      },
+      {
+        "curve_speed": null,
+        "id": "F567D5E2-B159-4C8F-99DB-637F3AE55F28",
+        "mode": 0,
+        "speed": 1,
+        "type": "speed"
+      },
+      {
+        "curve_speed": null,
+        "id": "663C01D9-C890-4688-826D-B4018C8B8D1F",
         "mode": 0,
         "speed": 1,
         "type": "speed"
@@ -262,7 +362,331 @@
         "freeze": null,
         "has_audio": true,
         "height": 1920,
-        "id": "0D0EB12A-FB69-472D-BF30-0C6569B0ACEF",
+        "id": "2A59F12B-9884-444F-9171-FE8EBCD69D56",
+        "intensifies_audio_path": "",
+        "intensifies_path": "",
+        "is_ai_generate_content": false,
+        "is_copyright": false,
+        "is_text_edit_overdub": false,
+        "is_unified_beauty_mode": false,
+        "local_id": "",
+        "local_material_id": "cc0f13b2-3f9a-48dd-8ff7-ef083ef6b884",
+        "material_id": "",
+        "material_name": "3月27日-cut-small.mp4",
+        "material_url": "",
+        "matting": {
+          "flag": 0,
+          "has_use_quick_brush": false,
+          "has_use_quick_eraser": false,
+          "interactiveTime": [],
+          "path": "",
+          "strokes": []
+        },
+        "media_path": "",
+        "object_locked": null,
+        "origin_material_id": "",
+        "path": "##_draftpath_placeholder_0E685133-18CE-45ED-8CB8-2904A212EC80_##/materials/video/3月27日-cut-small.mp4",
+        "picture_from": "none",
+        "picture_set_category_id": "",
+        "picture_set_category_name": "",
+        "request_id": "",
+        "reverse_intensifies_path": "",
+        "reverse_path": "",
+        "smart_motion": null,
+        "source": 0,
+        "source_platform": 0,
+        "stable": {
+          "matrix_path": "",
+          "stable_level": 0,
+          "time_range": {
+            "duration": 83966666,
+            "start": 0
+          }
+        },
+        "team_id": "",
+        "type": "video",
+        "video_algorithm": {
+          "algorithms": [],
+          "complement_frame_config": null,
+          "deflicker": null,
+          "gameplay_configs": [],
+          "motion_blur_config": null,
+          "noise_reduction": null,
+          "path": "",
+          "quality_enhance": null,
+          "time_range": null
+        },
+        "width": 1080
+      },
+      {
+        "aigc_type": "none",
+        "audio_fade": null,
+        "cartoon_path": "",
+        "category_id": "",
+        "category_name": "local",
+        "check_flag": 63487,
+        "crop": {
+          "lower_left_x": 0,
+          "lower_left_y": 1,
+          "lower_right_x": 1,
+          "lower_right_y": 1,
+          "upper_left_x": 0,
+          "upper_left_y": 0,
+          "upper_right_x": 1,
+          "upper_right_y": 0
+        },
+        "crop_ratio": "free",
+        "crop_scale": 1,
+        "duration": 83966666,
+        "extra_type_option": 0,
+        "formula_id": "",
+        "freeze": null,
+        "has_audio": true,
+        "height": 1920,
+        "id": "8BE83FE4-1978-4164-BDE3-A55FFFDAE2E8",
+        "intensifies_audio_path": "",
+        "intensifies_path": "",
+        "is_ai_generate_content": false,
+        "is_copyright": false,
+        "is_text_edit_overdub": false,
+        "is_unified_beauty_mode": false,
+        "local_id": "",
+        "local_material_id": "cc0f13b2-3f9a-48dd-8ff7-ef083ef6b884",
+        "material_id": "",
+        "material_name": "3月27日-cut-small.mp4",
+        "material_url": "",
+        "matting": {
+          "flag": 0,
+          "has_use_quick_brush": false,
+          "has_use_quick_eraser": false,
+          "interactiveTime": [],
+          "path": "",
+          "strokes": []
+        },
+        "media_path": "",
+        "object_locked": null,
+        "origin_material_id": "",
+        "path": "##_draftpath_placeholder_0E685133-18CE-45ED-8CB8-2904A212EC80_##/materials/video/3月27日-cut-small.mp4",
+        "picture_from": "none",
+        "picture_set_category_id": "",
+        "picture_set_category_name": "",
+        "request_id": "",
+        "reverse_intensifies_path": "",
+        "reverse_path": "",
+        "smart_motion": null,
+        "source": 0,
+        "source_platform": 0,
+        "stable": {
+          "matrix_path": "",
+          "stable_level": 0,
+          "time_range": {
+            "duration": 83966666,
+            "start": 0
+          }
+        },
+        "team_id": "",
+        "type": "video",
+        "video_algorithm": {
+          "algorithms": [],
+          "complement_frame_config": null,
+          "deflicker": null,
+          "gameplay_configs": [],
+          "motion_blur_config": null,
+          "noise_reduction": null,
+          "path": "",
+          "quality_enhance": null,
+          "time_range": null
+        },
+        "width": 1080
+      },
+      {
+        "aigc_type": "none",
+        "audio_fade": null,
+        "cartoon_path": "",
+        "category_id": "",
+        "category_name": "local",
+        "check_flag": 63487,
+        "crop": {
+          "lower_left_x": 0,
+          "lower_left_y": 1,
+          "lower_right_x": 1,
+          "lower_right_y": 1,
+          "upper_left_x": 0,
+          "upper_left_y": 0,
+          "upper_right_x": 1,
+          "upper_right_y": 0
+        },
+        "crop_ratio": "free",
+        "crop_scale": 1,
+        "duration": 83966666,
+        "extra_type_option": 0,
+        "formula_id": "",
+        "freeze": null,
+        "has_audio": true,
+        "height": 1920,
+        "id": "542B1094-E7A4-43B9-85EC-2E184D9136F5",
+        "intensifies_audio_path": "",
+        "intensifies_path": "",
+        "is_ai_generate_content": false,
+        "is_copyright": false,
+        "is_text_edit_overdub": false,
+        "is_unified_beauty_mode": false,
+        "local_id": "",
+        "local_material_id": "cc0f13b2-3f9a-48dd-8ff7-ef083ef6b884",
+        "material_id": "",
+        "material_name": "3月27日-cut-small.mp4",
+        "material_url": "",
+        "matting": {
+          "flag": 0,
+          "has_use_quick_brush": false,
+          "has_use_quick_eraser": false,
+          "interactiveTime": [],
+          "path": "",
+          "strokes": []
+        },
+        "media_path": "",
+        "object_locked": null,
+        "origin_material_id": "",
+        "path": "##_draftpath_placeholder_0E685133-18CE-45ED-8CB8-2904A212EC80_##/materials/video/3月27日-cut-small.mp4",
+        "picture_from": "none",
+        "picture_set_category_id": "",
+        "picture_set_category_name": "",
+        "request_id": "",
+        "reverse_intensifies_path": "",
+        "reverse_path": "",
+        "smart_motion": null,
+        "source": 0,
+        "source_platform": 0,
+        "stable": {
+          "matrix_path": "",
+          "stable_level": 0,
+          "time_range": {
+            "duration": 83966666,
+            "start": 0
+          }
+        },
+        "team_id": "",
+        "type": "video",
+        "video_algorithm": {
+          "algorithms": [],
+          "complement_frame_config": null,
+          "deflicker": null,
+          "gameplay_configs": [],
+          "motion_blur_config": null,
+          "noise_reduction": null,
+          "path": "",
+          "quality_enhance": null,
+          "time_range": null
+        },
+        "width": 1080
+      },
+      {
+        "aigc_type": "none",
+        "audio_fade": null,
+        "cartoon_path": "",
+        "category_id": "",
+        "category_name": "local",
+        "check_flag": 63487,
+        "crop": {
+          "lower_left_x": 0,
+          "lower_left_y": 1,
+          "lower_right_x": 1,
+          "lower_right_y": 1,
+          "upper_left_x": 0,
+          "upper_left_y": 0,
+          "upper_right_x": 1,
+          "upper_right_y": 0
+        },
+        "crop_ratio": "free",
+        "crop_scale": 1,
+        "duration": 83966666,
+        "extra_type_option": 0,
+        "formula_id": "",
+        "freeze": null,
+        "has_audio": true,
+        "height": 1920,
+        "id": "78084506-02AF-4C82-96B9-5BEA8CBC4C11",
+        "intensifies_audio_path": "",
+        "intensifies_path": "",
+        "is_ai_generate_content": false,
+        "is_copyright": false,
+        "is_text_edit_overdub": false,
+        "is_unified_beauty_mode": false,
+        "local_id": "",
+        "local_material_id": "cc0f13b2-3f9a-48dd-8ff7-ef083ef6b884",
+        "material_id": "",
+        "material_name": "3月27日-cut-small.mp4",
+        "material_url": "",
+        "matting": {
+          "flag": 0,
+          "has_use_quick_brush": false,
+          "has_use_quick_eraser": false,
+          "interactiveTime": [],
+          "path": "",
+          "strokes": []
+        },
+        "media_path": "",
+        "object_locked": null,
+        "origin_material_id": "",
+        "path": "##_draftpath_placeholder_0E685133-18CE-45ED-8CB8-2904A212EC80_##/materials/video/3月27日-cut-small.mp4",
+        "picture_from": "none",
+        "picture_set_category_id": "",
+        "picture_set_category_name": "",
+        "request_id": "",
+        "reverse_intensifies_path": "",
+        "reverse_path": "",
+        "smart_motion": null,
+        "source": 0,
+        "source_platform": 0,
+        "stable": {
+          "matrix_path": "",
+          "stable_level": 0,
+          "time_range": {
+            "duration": 83966666,
+            "start": 0
+          }
+        },
+        "team_id": "",
+        "type": "video",
+        "video_algorithm": {
+          "algorithms": [],
+          "complement_frame_config": null,
+          "deflicker": null,
+          "gameplay_configs": [],
+          "motion_blur_config": null,
+          "noise_reduction": null,
+          "path": "",
+          "quality_enhance": null,
+          "time_range": null
+        },
+        "width": 1080
+      },
+      {
+        "aigc_type": "none",
+        "audio_fade": null,
+        "cartoon_path": "",
+        "category_id": "",
+        "category_name": "local",
+        "check_flag": 63487,
+        "crop": {
+          "lower_left_x": 0,
+          "lower_left_y": 1,
+          "lower_right_x": 1,
+          "lower_right_y": 1,
+          "upper_left_x": 0,
+          "upper_left_y": 0,
+          "upper_right_x": 1,
+          "upper_right_y": 0
+        },
+        "crop_ratio": "free",
+        "crop_scale": 1,
+        "duration": 83966666,
+        "extra_type_option": 0,
+        "formula_id": "",
+        "freeze": null,
+        "has_audio": true,
+        "height": 1920,
+        "id": "825780B5-AF5D-46DE-BC28-64FF216F2639",
         "intensifies_audio_path": "",
         "intensifies_path": "",
         "is_ai_generate_content": false,
@@ -330,7 +754,35 @@
       },
       {
         "choice": 0,
-        "id": "5850067E-CA9F-4893-8361-9D2196F46DA8",
+        "id": "198F7A01-1A93-43E4-AC02-786FD6DE487A",
+        "production_path": "",
+        "time_range": null,
+        "type": "vocal_separation"
+      },
+      {
+        "choice": 0,
+        "id": "E74FA615-D474-4FEC-AC99-495E36B54749",
+        "production_path": "",
+        "time_range": null,
+        "type": "vocal_separation"
+      },
+      {
+        "choice": 0,
+        "id": "12988005-E85E-4C6C-B98C-5F7B72734911",
+        "production_path": "",
+        "time_range": null,
+        "type": "vocal_separation"
+      },
+      {
+        "choice": 0,
+        "id": "B32F0F5A-DA81-4B37-A696-D9C405F982A9",
+        "production_path": "",
+        "time_range": null,
+        "type": "vocal_separation"
+      },
+      {
+        "choice": 0,
+        "id": "540824AB-C41F-4EF9-B25B-BC41B67492EC",
         "production_path": "",
         "time_range": null,
         "type": "vocal_separation"
@@ -431,6 +883,90 @@
           "template_scene": "default",
           "track_attribute": 0,
           "track_render_index": 0,
+          "uniform_scale": {
+            "on": true,
+            "value": 1
+          },
+          "visible": true,
+          "volume": 1
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "attribute": 0,
+      "flag": 2,
+      "id": "4FC8713A-1E48-4671-9AF0-805DDD7EA98C",
+      "is_default_name": true,
+      "name": "",
+      "segments": [
+        {
+          "caption_info": null,
+          "cartoon": false,
+          "clip": {
+            "alpha": 1,
+            "flip": {
+              "horizontal": false,
+              "vertical": false
+            },
+            "rotation": 0,
+            "scale": {
+              "x": 1,
+              "y": 1
+            },
+            "transform": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "common_keyframes": [],
+          "enable_adjust": true,
+          "enable_color_curves": true,
+          "enable_color_match_adjust": false,
+          "enable_color_wheels": true,
+          "enable_lut": true,
+          "enable_smart_color_adjust": false,
+          "extra_material_refs": [
+            "7B03303A-188D-4FCD-9E27-66EF4131A057",
+            "2D87BB00-CF4F-4AD3-B53B-2D4FAB62CC13",
+            "663C01D9-C890-4688-826D-B4018C8B8D1F",
+            "540824AB-C41F-4EF9-B25B-BC41B67492EC"
+          ],
+          "group_id": "",
+          "hdr_settings": {
+            "intensity": 1,
+            "mode": 1,
+            "nits": 1000
+          },
+          "id": "DF17A814-F77E-4F29-928A-C14ACBC1BA57",
+          "intensifies_audio": false,
+          "is_placeholder": false,
+          "is_tone_modify": false,
+          "keyframe_refs": [],
+          "last_nonzero_volume": 1,
+          "material_id": "825780B5-AF5D-46DE-BC28-64FF216F2639",
+          "render_index": 2,
+          "responsive_layout": {
+            "enable": false,
+            "horizontal_pos_layout": 0,
+            "size_layout": 0,
+            "target_follow": "",
+            "vertical_pos_layout": 0
+          },
+          "reverse": false,
+          "source_timerange": {
+            "duration": null,
+            "start": null
+          },
+          "speed": 1,
+          "target_timerange": {
+            "duration": null,
+            "start": null
+          },
+          "template_id": "",
+          "template_scene": "default",
+          "track_attribute": 0,
+          "track_render_index": 2,
           "uniform_scale": {
             "on": true,
             "value": 1

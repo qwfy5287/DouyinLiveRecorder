@@ -150,3 +150,41 @@ export function convertSubtitleTimeToMicroseconds(timeString) {
 // const timeString = "00:00:01,466.789";
 // const totalMicroseconds = convertSubtitleTimeToMicroseconds(timeString);
 // console.log(totalMicroseconds);  // 输出 1466789
+
+export const srtStringToJson = (srtString) => {
+  let result = null;
+
+  const srtLines = srtString.trim().split("\n");
+  const jsonResult = [];
+
+  for (let i = 0; i < srtLines.length; i += 4) {
+    const index = srtLines[i];
+    const [start, end] = srtLines[i + 1].split(" --> ");
+    const text = srtLines[i + 2];
+
+    jsonResult.push({
+      index: parseInt(index),
+      start_time: start.trim(),
+      end_time: end.trim(),
+      text: text.trim(),
+      keyword: text.trim(),
+    });
+  }
+
+  result = jsonResult;
+
+  return result;
+};
+
+export const jsonToSrtString = (subtitleJson) => {
+  const jsonData = subtitleJson;
+  let srtString = "";
+
+  jsonData.forEach((item) => {
+    srtString += `${item.index}\n`;
+    srtString += `${item.start_time} --> ${item.end_time}\n`;
+    srtString += `${item.text}\n\n`;
+  });
+
+  return srtString.trim();
+};
