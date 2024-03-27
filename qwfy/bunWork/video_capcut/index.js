@@ -199,6 +199,7 @@ if (draftJson) {
   `;
   let json = srtStringToJson(strString);
 
+  let sort_start_time = 0;
   json.forEach((item) => {
     // console.log(item.start_time);
     let start_time = convertSubtitleTimeToMicroseconds(item.start_time);
@@ -206,9 +207,11 @@ if (draftJson) {
     let duration = end_time - start_time;
     // console.log(start_time);
     // console.log(duration);
-    console.log(item);
+    // console.log(item);
+    // console.log(sort_start_time);
     // 便利生成新的
-    splitVideo(draftJson, newTrackItem, start_time, duration);
+    splitVideo(draftJson, newTrackItem, start_time, duration, sort_start_time);
+    sort_start_time += duration;
   });
   newTrackItem.segments.shift();
   draftJson.tracks.push(newTrackItem);
@@ -217,7 +220,13 @@ if (draftJson) {
   writeJsonFile(targetJsonPath, draftJson);
 }
 
-function splitVideo(draftJson, newTrackItem, start_time, duration) {
+function splitVideo(
+  draftJson,
+  newTrackItem,
+  start_time,
+  duration,
+  sort_start_time
+) {
   // 1 添加 materials
   // 1.1 添加 canvases item
   let newCanvasId = generateId();
@@ -279,11 +288,17 @@ function splitVideo(draftJson, newTrackItem, start_time, duration) {
       duration: duration,
       start: start_time,
     },
+    // target_timerange: {
+    //   // duration: 43966666,
+    //   // start: 40000000,
+    //   duration: duration,
+    //   start: start_time,
+    // },
     target_timerange: {
       // duration: 43966666,
       // start: 40000000,
       duration: duration,
-      start: start_time,
+      start: sort_start_time,
     },
   };
   // newTrackItem.segments = [];
