@@ -122,21 +122,28 @@ export function convertSubtitleTimeToNumber(timeString) {
 // console.log(totalMilliseconds);  // 输出 1466
 
 /**
- * 将字幕 时间字符串 转换为 微秒数
- *  00:00:01,466.789 -> 1466789
+ * 将字幕时间字符串转换为微秒数
+ * 00:00:01,466.789 -> 1466789
+ * 00:00:17,600 -> 17600000
  * @param {*} timeString
  * @returns
  */
 export function convertSubtitleTimeToMicroseconds(timeString) {
-  // 将时间字符串按照冒号、逗号和点分割成时、分、秒和微秒
+  // 将时间字符串按照冒号、逗号和点分割成时、分、秒、毫秒和微秒
   const parts = timeString.split(/[:,\.]/);
 
-  // 提取时、分、秒和微秒
+  // 提取时、分、秒、毫秒和微秒
   const hours = parseInt(parts[0], 10);
   const minutes = parseInt(parts[1], 10);
   const seconds = parseInt(parts[2], 10);
-  const milliseconds = parseInt(parts[3], 10);
-  const microseconds = parseInt(parts[4], 10);
+  let milliseconds = 0;
+  let microseconds = 0;
+  if (parts.length > 3) {
+    milliseconds = parseInt(parts[3], 10);
+    if (parts.length > 4) {
+      microseconds = parseInt(parts[4], 10);
+    }
+  }
 
   // 计算总微秒数
   const totalMicroseconds =

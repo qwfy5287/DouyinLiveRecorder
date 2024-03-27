@@ -112,40 +112,105 @@ if (draftJson) {
     flag: 2,
   };
 
-  let strString = `7
-  00:00:12,166 --> 00:00:13,000
-  跑量价结婚
+  let strString = `21
+  00:00:41,700 --> 00:00:43,120
+  哇这上身的质感
+  
+  25
+  00:00:50,366 --> 00:00:53,680
+  夏天穿起来是嫩感通透肉感的
+  
+  32
+  00:01:08,266 --> 00:01:11,400
+  你就算袖子别一点点起来穿也很好看
+  
+  33
+  00:01:11,400 --> 00:01:11,960
+  很好看
+  
+  2
+  00:00:02,933 --> 00:00:05,120
+  做真正的高端线
   
   8
-  00:00:13,000 --> 00:00:15,900
+  00:00:13,000 --> 00:00:15,880
   这种的衣服结婚谁真的作
   
-  9
-  00:00:16,166 --> 00:00:17,600
-  真心非常作
-  
-  10
-  00:00:17,600 --> 00:00:22,266
-  这件韩呃法国进口的一个原麻料
-  
   11
-  00:00:22,333 --> 00:00:24,600
-  对又结合了拉架
+  00:00:19,160 --> 00:00:22,240
+  法国进口的一个原麻料
+  
+  15
+  00:00:29,933 --> 00:00:31,720
+  结合其他的全亚麻
+  
+  19
+  00:00:37,400 --> 00:00:39,360
+  一个灰一个粉色
+  
+  20
+  00:00:40,500 --> 00:00:41,520
+  确认一下这里面
+  
+  22
+  00:00:43,133 --> 00:00:44,720
+  真的你们会爱惨我
+  
+  23
+  00:00:45,466 --> 00:00:47,920
+  这件是真正进口的一个法国
+  
+  26
+  00:00:54,088 --> 00:00:55,640
+  你看一下这垂的感觉
+  
+  27
+  00:00:56,200 --> 00:00:58,200
+  你就算挂在那里有一点褶皱
+  
+  28
+  00:00:58,200 --> 00:01:00,200
+  挂在那里一会直接又回弹了
+  
+  30
+  00:01:03,333 --> 00:01:05,560
+  真的每天看你直播一点不带寂寞的
+  
+  34
+  00:01:12,733 --> 00:01:14,000
+  它真的很贵
+  
+  36
+  00:01:15,500 --> 00:01:16,960
+  这件应该只有三个尺码
+  
+  37
+  00:01:17,166 --> 00:01:19,320
+  m是1百s码s码105
+  
+  38
+  00:01:19,333 --> 00:01:21,880
+  m码120 加l穿到145斤
+  
+  39
+  00:01:21,900 --> 00:01:23,480
+  我觉得这件卡码都拍小
+
   `;
   let json = srtStringToJson(strString);
 
   json.forEach((item) => {
-    console.log(item.start_time);
+    // console.log(item.start_time);
     let start_time = convertSubtitleTimeToMicroseconds(item.start_time);
     let end_time = convertSubtitleTimeToMicroseconds(item.end_time);
     let duration = end_time - start_time;
-    console.log(start_time);
-    console.log(duration);
+    // console.log(start_time);
+    // console.log(duration);
     console.log(item);
     // 便利生成新的
     splitVideo(draftJson, newTrackItem, start_time, duration);
   });
-  // newTrackItem.segments.shift();
+  newTrackItem.segments.shift();
   draftJson.tracks.push(newTrackItem);
 
   // 写入新的 JSON 文件
@@ -221,6 +286,6 @@ function splitVideo(draftJson, newTrackItem, start_time, duration) {
       start: start_time,
     },
   };
-  newTrackItem.segments = [];
+  // newTrackItem.segments = [];
   newTrackItem.segments.push(newSegmentItem);
 }

@@ -22,6 +22,11 @@ function jsonToSrt(json, keywordList) {
   const srt = [];
   let index = 1;
 
+  if (json.tracks.filter((track) => track.type === "text").length === 0) {
+    console.log("JSON 中没有文本轨道");
+    return "";
+  }
+
   // 预处理 tracks 中的时间单位
   json.tracks.forEach((track) => {
     if (track.type === "text") {
@@ -207,27 +212,31 @@ function formatNumber(number, minimumIntegerDigits = 2) {
 const jsonData = readJsonFromFile("./draft_info.json");
 
 if (jsonData) {
+  // console.log(jsonData);
   // const keywordList = ["买的", "黑色的", "好不好", "然后呢", "呃", "对"];
   const keywordList = ["好不", "好不好", "然后呢", "呃", "对"];
   const srtData = jsonToSrt(jsonData, keywordList);
+
+  // console.log("srtData");
+  // console.log(srtData);
 
   // subTitle 精细化处理
   let subtitleJson = doFlow(srtData);
 
   console.log(subtitleJson.length);
-  console.log(subtitleJson);
+  // console.log(subtitleJson);
 
-  let pickArr = [
-    51, 55, 59, 61, 62, 63, 64, 72, 73, 74, 82, 83, 84, 126, 130, 135, 136, 137,
-    162, 163, 191, 192,
-  ];
+  // let pickArr = [
+  //   51, 55, 59, 61, 62, 63, 64, 72, 73, 74, 82, 83, 84, 126, 130, 135, 136, 137,
+  //   162, 163, 191, 192,
+  // ];
 
-  let pickJson = subtitleJson.filter((item) => {
-    return pickArr.includes(item.index);
-  });
+  // let pickJson = subtitleJson.filter((item) => {
+  //   return pickArr.includes(item.index);
+  // });
 
-  // let srt = jsonToSrtString(subtitleJson);
-  let srt = jsonToSrtString(pickJson);
+  let srt = jsonToSrtString(subtitleJson);
+  // let srt = jsonToSrtString(pickJson);
 
   console.log("🚀 ~ srt:");
   console.log(srt);

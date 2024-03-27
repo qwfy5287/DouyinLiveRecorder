@@ -52,12 +52,12 @@
   "last_modified_platform": {
     "app_id": 3704,
     "app_source": "lv",
-    "app_version": "5.7.0-beta5",
-    "device_id": "2f7fa626a1e795c6b5299d5b769f6095",
-    "hard_disk_id": "9a68a944eed5054608fa34ebfe6c2022",
-    "mac_address": "6a9c75478f942b32ca13b80a9f8dfdd1",
+    "app_version": "5.7.0-beta4",
+    "device_id": "066f6f5dba216270aa6f9206842314e3",
+    "hard_disk_id": "bace523f514f16d740e06fb22bf79db5",
+    "mac_address": "b370fccdaf87cac7dca11b94ae5c2c28",
     "os": "mac",
-    "os_version": "14.4"
+    "os_version": "14.3.1"
   },
   "materials": {
     "ai_translates": [],
@@ -231,9 +231,9 @@
     "app_id": 3704,
     "app_source": "lv",
     "app_version": "5.7.0-beta2",
-    "device_id": "2f7fa626a1e795c6b5299d5b769f6095",
-    "hard_disk_id": "9a68a944eed5054608fa34ebfe6c2022",
-    "mac_address": "6a9c75478f942b32ca13b80a9f8dfdd1",
+    "device_id": "066f6f5dba216270aa6f9206842314e3",
+    "hard_disk_id": "e7f6a0c553fdbe1638a044df0439cdb6",
+    "mac_address": "b370fccdaf87cac7dca11b94ae5c2c28",
     "os": "mac",
     "os_version": "14.4"
   },
