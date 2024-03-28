@@ -1,25 +1,18 @@
-import { doFlow, jsonToSrtString, srtStringToJson } from "./capcut.common";
-import { writeSrtFile } from "../video_capcut/common/video.common";
+import {
+  doFlow,
+  filterLinesByKeywords,
+  formatTime,
+  jsonToSrtString,
+  mergeSubtitleLines,
+  srtStringToJson,
+} from "./capcut.common";
+import {
+  writeSrtFile,
+  readJsonFile,
+  convertTimeToMilliseconds,
+} from "../video_capcut/common/video.common";
 
-const fs = require("fs");
-
-// 从文件中读取 JSON 数据
-function readJsonFromFile(filePath) {
-  try {
-    const jsonString = fs.readFileSync(filePath, "utf8");
-    return JSON.parse(jsonString);
-  } catch (error) {
-    console.error("读取 JSON 文件时出错:", error);
-    return null;
-  }
-}
-
-// 将时间从微秒转换为毫秒
-function convertTimeToMilliseconds(time) {
-  return Math.floor(time / 1000);
-}
-
-function jsonToSrt(json, keywordList) {
+function dartJsonToSrt(json, keywordList) {
   const srt = [];
   let index = 1;
 
@@ -156,104 +149,61 @@ function jsonToSrt(json, keywordList) {
   return srt.join("\n");
 }
 
-function filterLinesByKeywords(splitSubtitleLines, keywordList) {
-  // 过滤掉分割后的关键词
-  let filterLines = splitSubtitleLines.filter((line) => {
-    return (
-      // keywordList.filter((keyword) => keyword.includes(line.text.trim()))
-      keywordList.filter((keyword) => line.text.trim().includes(keyword))
-        .length === 0
-    );
-  });
-  return filterLines;
-}
-
-function mergeSubtitleLines(subtitleLines) {
-  const mergedLines = [];
-
-  for (let i = 0; i < subtitleLines.length; i++) {
-    const currentLine = subtitleLines[i];
-
-    if (i === 0) {
-      mergedLines.push(currentLine);
-    } else {
-      const prevLine = mergedLines[mergedLines.length - 1];
-
-      if (prevLine.endTime === currentLine.startTime) {
-        prevLine.text += "" + currentLine.text;
-        prevLine.endTime = currentLine.endTime;
-      } else {
-        mergedLines.push(currentLine);
-      }
-    }
+export function doDartJsonToSrt(sourceJsonPath) {
+  if (!sourceJsonPath) {
+    sourceJsonPath =
+      "/Users/qwfy/Movies/JianyingPro/User Data/Projects/com.lveditor.draft/3月27日-cut-small/draft_info.json";
   }
 
-  return mergedLines;
+  // 读取 JSON 文件
+  const jsonData = readJsonFile(sourceJsonPath);
+
+  if (jsonData) {
+    // const keywordList = ["买的", "黑色的", "好不好", "然后呢", "呃", "对"];
+    const keywordList = ["好不", "好不好", "然后呢", "呃", "对"];
+    const srtData = dartJsonToSrt(jsonData, keywordList);
+    if (!srtData) {
+      console.log("没有字幕");
+      return;
+    }
+
+    // subTitle 精细化处理
+    let subtitleJson = doFlow(srtData);
+
+    // console.log(subtitleJson.length);
+    // console.log(subtitleJson);
+
+    // let pickArr = [
+    //   51, 55, 59, 61, 62, 63, 64, 72, 73, 74, 82, 83, 84, 126, 130, 135, 136, 137,
+    //   162, 163, 191, 192,
+    // ];
+
+    // let pickJson = subtitleJson.filter((item) => {
+    //   return pickArr.includes(item.index);
+    // });
+
+    let srt = jsonToSrtString(subtitleJson);
+
+    // console.log("🚀 ~ srt:");
+    // console.log(srt);
+
+    writeSrtFile("output_srt.srt", srt);
+
+    return srt;
+
+    // console.log(json);
+
+    // const srtLines = srtData.trim().split("\\n");
+    // console.log(srtLines[0]);
+    // const jsonString = convertSrtToJson(srtLines);
+    // console.log(jsonString);
+
+    // console.log(srtData);
+  }
 }
 
-// 格式化时间为 SRT 格式
-function formatTime(time) {
-  const totalSeconds = Math.floor(time / 1000);
-  const milliseconds = time % 1000;
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  return `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(
-    seconds
-  )},${formatNumber(milliseconds, 3)}`;
+function main() {
+  doDartJsonToSrt();
 }
 
-// 格式化数字,补零
-function formatNumber(number, minimumIntegerDigits = 2) {
-  return number.toString().padStart(minimumIntegerDigits, "0");
-}
-
-let sourceFile =
-  "/Users/qwfy/Movies/JianyingPro/User Data/Projects/com.lveditor.draft/3月27日-cut-small (2)/draft_info.json";
-
-// 读取 JSON 文件
-// const jsonData = readJsonFromFile("./draft_info.json");
-const jsonData = readJsonFromFile(sourceFile);
-
-if (jsonData) {
-  // console.log(jsonData);
-  // const keywordList = ["买的", "黑色的", "好不好", "然后呢", "呃", "对"];
-  const keywordList = ["好不", "好不好", "然后呢", "呃", "对"];
-  const srtData = jsonToSrt(jsonData, keywordList);
-
-  // console.log("srtData");
-  // console.log(srtData);
-
-  // subTitle 精细化处理
-  let subtitleJson = doFlow(srtData);
-
-  console.log(subtitleJson.length);
-  // console.log(subtitleJson);
-
-  // let pickArr = [
-  //   51, 55, 59, 61, 62, 63, 64, 72, 73, 74, 82, 83, 84, 126, 130, 135, 136, 137,
-  //   162, 163, 191, 192,
-  // ];
-
-  // let pickJson = subtitleJson.filter((item) => {
-  //   return pickArr.includes(item.index);
-  // });
-
-  let srt = jsonToSrtString(subtitleJson);
-  // let srt = jsonToSrtString(pickJson);
-
-  console.log("🚀 ~ srt:");
-  console.log(srt);
-
-  writeSrtFile("output.srt", srt);
-
-  // console.log(json);
-
-  // const srtLines = srtData.trim().split("\\n");
-  // console.log(srtLines[0]);
-  // const jsonString = convertSrtToJson(srtLines);
-  // console.log(jsonString);
-
-  // console.log(srtData);
-}
+main();

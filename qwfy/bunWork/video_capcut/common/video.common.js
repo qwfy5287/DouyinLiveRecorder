@@ -2,17 +2,6 @@
 
 const fs = require("fs");
 
-// // 从文件中读取 JSON 数据
-// export function readJsonFromFile(filePath) {
-//   try {
-//     const jsonString = fs.readFileSync(filePath, "utf8");
-//     return JSON.parse(jsonString);
-//   } catch (error) {
-//     console.error("读取 JSON 文件时出错:", error);
-//     return null;
-//   }
-// }
-
 // 读取 JSON 文件
 export function readJsonFile(filePath) {
   try {
@@ -216,3 +205,12 @@ export const jsonToSrtString = (subtitleJson) => {
 
   return srtString.trim();
 };
+
+/**
+ * 将时间从微秒转换为毫秒
+ * @param {*} time
+ * @returns
+ */
+export function convertTimeToMilliseconds(time) {
+  return Math.floor(time / 1000);
+}

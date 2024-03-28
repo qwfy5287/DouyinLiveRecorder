@@ -100,6 +100,60 @@ export const sortJson = (filteredSubtitleJson) => {
   return result;
 };
 
+// 格式化数字,补零
+export function formatNumber(number, minimumIntegerDigits = 2) {
+  return number.toString().padStart(minimumIntegerDigits, "0");
+}
+
+// 格式化时间为 SRT 格式
+export function formatTime(time) {
+  // console.log("🚀 ~ formatTime ~ time:", time);
+  const totalSeconds = Math.floor(time / 1000);
+  const milliseconds = time % 1000;
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(
+    seconds
+  )},${formatNumber(milliseconds, 3)}`;
+}
+
+export function filterLinesByKeywords(splitSubtitleLines, keywordList) {
+  // 过滤掉分割后的关键词
+  let filterLines = splitSubtitleLines.filter((line) => {
+    return (
+      // keywordList.filter((keyword) => keyword.includes(line.text.trim()))
+      keywordList.filter((keyword) => line.text.trim().includes(keyword))
+        .length === 0
+    );
+  });
+  return filterLines;
+}
+
+export function mergeSubtitleLines(subtitleLines) {
+  const mergedLines = [];
+
+  for (let i = 0; i < subtitleLines.length; i++) {
+    const currentLine = subtitleLines[i];
+
+    if (i === 0) {
+      mergedLines.push(currentLine);
+    } else {
+      const prevLine = mergedLines[mergedLines.length - 1];
+
+      if (prevLine.endTime === currentLine.startTime) {
+        prevLine.text += "" + currentLine.text;
+        prevLine.endTime = currentLine.endTime;
+      } else {
+        mergedLines.push(currentLine);
+      }
+    }
+  }
+
+  return mergedLines;
+}
+
 /**
  * subTitle 精细化处理
  * 1. 将 SRT 字幕转换为 JSON 格式
@@ -108,21 +162,21 @@ export const doFlow = (srtData) => {
   let result = null;
 
   const subtitleJsonResult = srtStringToJson(srtData);
-  console.log(subtitleJsonResult.length);
+  console.log("json:", subtitleJsonResult.length);
   //   console.log(jsonString);
 
   const filterJsonResult = filterJson(subtitleJsonResult);
-  console.log(filterJsonResult.length);
+  console.log("filter:", filterJsonResult.length);
 
   //   console.log(filterJsonResult);
 
   const sortJsonResult = sortJson(filterJsonResult);
-  console.log(sortJsonResult.length);
+  console.log("sort:", sortJsonResult.length);
 
   const sortJsonGood = sortJsonResult.filter((item) => item.sort < 9);
   const sortJsonNormal = sortJsonResult.filter((item) => item.sort >= 9);
-  console.log(sortJsonGood.length);
-  console.log(sortJsonNormal.length);
+  console.log("sort good:", sortJsonGood.length);
+  console.log("sort normal", sortJsonNormal.length);
   //   console.log(sortJsonGood);
   // console.log(sortJsonNormal);
 
