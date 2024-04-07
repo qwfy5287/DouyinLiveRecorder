@@ -83,12 +83,14 @@ impl CsvObserver {
                                             }
                                         }
                                     } else {
-                                        // 文件内容不同,将新文件重命名为 source_v2.csv
-                                        let source_v2_path = Path::new(&self.path).join(format!("{}_source_v2.csv", name));
-                                        if let Err(err) = fs::rename(new_csv_path, &source_v2_path) {
+                                        // 文件内容不同,找到最新的 source 版本并递增
+                                        let latest_version = self.find_latest_source_version(name);
+                                        let new_version = latest_version + 1;
+                                        let new_source_path = Path::new(&self.path).join(format!("{}_source_v{}.csv", name, new_version));
+                                        if let Err(err) = fs::rename(new_csv_path, &new_source_path) {
                                             eprintln!("Failed to rename file: {:?}", err);
                                         } else {
-                                            self.notify_new_source_file(&source_v2_path);
+                                            self.notify_new_source_file(&new_source_path);
                                         }
                                     }
                                 } else {
@@ -106,6 +108,18 @@ impl CsvObserver {
                 }
             }
         }
+    }
+
+    fn find_latest_source_version(&self, name: &str) -> u32 {
+        let mut latest_version = 1;
+        loop {
+            let source_path = Path::new(&self.path).join(format!("{}_source_v{}.csv", name, latest_version));
+            if !source_path.exists() {
+                break;
+            }
+            latest_version += 1;
+        }
+        latest_version - 1
     }
 
     fn notify_new_source_file(&self, path: &Path) {
