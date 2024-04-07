@@ -87,12 +87,16 @@ impl CsvObserver {
                                         let source_v2_path = Path::new(&self.path).join(format!("{}_source_v2.csv", name));
                                         if let Err(err) = fs::rename(new_csv_path, &source_v2_path) {
                                             eprintln!("Failed to rename file: {:?}", err);
+                                        } else {
+                                            self.notify_new_source_file(&source_v2_path);
                                         }
                                     }
                                 } else {
                                     // source_v1.csv 不存在,将新文件重命名为 source_v1.csv
                                     if let Err(err) = fs::rename(new_csv_path, &source_v1_path) {
                                         eprintln!("Failed to rename file: {:?}", err);
+                                    } else {
+                                        self.notify_new_source_file(&source_v1_path);
                                     }
                                 }
                                 break;
@@ -102,6 +106,10 @@ impl CsvObserver {
                 }
             }
         }
+    }
+
+    fn notify_new_source_file(&self, path: &Path) {
+        println!("New source file generated: {}", path.display());
     }
     
     fn compare_csv_files(&self, file1: &Path, file2: &Path) -> bool {
