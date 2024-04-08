@@ -177,14 +177,14 @@ impl Observer for CsvObserver {
     }
 }
 
-fn send_email_notification(subjectInner: &str) {
+fn send_email_notification(subject_inner: &str) {
     let from = "qwfy <qwfy5287@qq.com>";
     let to = vec![
         "收件人1 <qwfy5287@gmail.com>",
         // "收件人2 <719425597@qq.com>",
     ];
     // let subject = "刘一一_货盘有更新_06";
-    let subject = subjectInner;
+    let subject = subject_inner;
     let body = "这是一封通过 QQ 邮箱发送的提醒邮件";
     let smtp_server = "smtp.qq.com";
     let username = "qwfy5287@qq.com";
