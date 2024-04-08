@@ -1,12 +1,10 @@
-
-// 
-
 use notify::{Config, PollWatcher, RecursiveMode, Result, Watcher};
 use std::fs::{self, File};
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 use std::sync::mpsc::channel;
 use std::time::Duration;
+use std::path::PathBuf;
 
 trait Observer {
     fn update(&self, event: &Result<notify::Event>);
@@ -39,7 +37,6 @@ impl FileWatcher {
         let config = Config::default().with_poll_interval(Duration::from_secs(2));
         let mut watcher = PollWatcher::new(tx, config).unwrap();
 
-        // 使用传入的路径参数替换原先的硬编码路径
         watcher
             .watch(Path::new(path), RecursiveMode::Recursive)
             .unwrap();
@@ -65,48 +62,69 @@ impl CsvObserver {
 
     fn process_csv(&self, event: &Result<notify::Event>) {
         if let Ok(event) = event {
-            if event.kind.is_create() {
-                if let Some(path) = event.paths.get(0) {
-                    if path.extension().unwrap_or_default() == "csv" {
-                        let file_name = path.file_name().unwrap().to_str().unwrap();
-                        for name in &self.monitored_names {
-                            if file_name.contains(name) {
-                                let source_v1_path = Path::new(&self.path).join(format!("{}_source_v1.csv", name));
-                                let new_csv_path = path;
-
-                                if source_v1_path.exists() {
-                                    if self.compare_csv_files(&source_v1_path, new_csv_path) {
-                                        // 文件内容相同,删除新文件,但不删除包含 "_source_" 的文件
-                                        if !file_name.contains("_source_") {
-                                            if let Err(err) = fs::remove_file(new_csv_path) {
-                                                eprintln!("Failed to remove file: {:?}", err);
-                                            }
-                                        }
-                                    } else {
-                                        // 文件内容不同,找到最新的 source 版本并递增
-                                        let latest_version = self.find_latest_source_version(name);
-                                        let new_version = latest_version + 1;
-                                        let new_source_path = Path::new(&self.path).join(format!("{}_source_v{}.csv", name, new_version));
-                                        if let Err(err) = fs::rename(new_csv_path, &new_source_path) {
-                                            eprintln!("Failed to rename file: {:?}", err);
-                                        } else {
-                                            self.notify_new_source_file(&new_source_path);
-                                        }
-                                    }
-                                } else {
-                                    // source_v1.csv 不存在,将新文件重命名为 source_v1.csv
-                                    if let Err(err) = fs::rename(new_csv_path, &source_v1_path) {
-                                        eprintln!("Failed to rename file: {:?}", err);
-                                    } else {
-                                        self.notify_new_source_file(&source_v1_path);
-                                    }
-                                }
-                                break;
-                            }
-                        }
+            if let Some(path) = self.get_csv_file_path(event) {
+                let file_name = path.file_name().unwrap().to_str().unwrap();
+                
+                if self.should_skip_processing(file_name) {
+                    return;
+                }
+                
+                if let Some(name) = self.get_monitored_name(file_name) {
+                    let latest_version = self.find_latest_source_version(name);
+                    let latest_source_path = self.get_source_file_path(name, latest_version);
+                    
+                    if latest_source_path.exists() {
+                        self.process_existing_source_file(name, latest_version, &latest_source_path, path);
+                    } else {
+                        self.process_new_source_file(name, path);
                     }
                 }
             }
+        }
+    }
+    
+    fn get_csv_file_path<'a>(&'a self, event: &'a notify::Event) -> Option<&'a Path> {
+        if event.kind.is_create() {
+            event.paths.get(0).filter(|path| path.extension().unwrap_or_default() == "csv").map(|path| path.as_path())
+        } else {
+            None
+        }
+    }
+    
+    fn should_skip_processing(&self, file_name: &str) -> bool {
+        file_name.contains("_source_")
+    }
+    
+    fn get_monitored_name(&self, file_name: &str) -> Option<&str> {
+        self.monitored_names.iter().find(|name| file_name.contains(&**name)).map(|s| s.as_str())
+    }
+    
+    fn get_source_file_path(&self, name: &str, version: u32) -> PathBuf {
+        Path::new(&self.path).join(format!("{}_source_v{}.csv", name, version))
+    }
+    
+    fn process_existing_source_file(&self, name: &str, latest_version: u32, latest_source_path: &Path, new_csv_path: &Path) {
+        if self.compare_csv_files(latest_source_path, new_csv_path) {
+            if let Err(err) = fs::remove_file(new_csv_path) {
+                eprintln!("Failed to remove file: {:?}", err);
+            }
+        } else {
+            let new_version = latest_version + 1;
+            let new_source_path = self.get_source_file_path(name, new_version);
+            if let Err(err) = fs::rename(new_csv_path, &new_source_path) {
+                eprintln!("Failed to rename file: {:?}", err);
+            } else {
+                self.notify_new_source_file(&new_source_path);
+            }
+        }
+    }
+    
+    fn process_new_source_file(&self, name: &str, new_csv_path: &Path) {
+        let source_v1_path = self.get_source_file_path(name, 1);
+        if let Err(err) = fs::rename(new_csv_path, &source_v1_path) {
+            eprintln!("Failed to rename file: {:?}", err);
+        } else {
+            self.notify_new_source_file(&source_v1_path);
         }
     }
 
@@ -125,7 +143,7 @@ impl CsvObserver {
     fn notify_new_source_file(&self, path: &Path) {
         println!("New source file generated: {}", path.display());
     }
-    
+
     fn compare_csv_files(&self, file1: &Path, file2: &Path) -> bool {
         let file1_reader = match File::open(file1) {
             Ok(file) => BufReader::new(file),
