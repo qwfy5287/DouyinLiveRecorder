@@ -23,7 +23,7 @@ mod common;
 use crate::common::email_common::send_email;
 
 fn main() {
-    let from = "发件人 <qwfy5287@qq.com>";
+    let from = "qwfy <qwfy5287@qq.com>";
     let to = vec![
         "收件人1 <qwfy5287@gmail.com>",
         "收件人2 <719425597@qq.com>",
