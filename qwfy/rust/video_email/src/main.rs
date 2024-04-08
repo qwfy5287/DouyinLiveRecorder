@@ -1,25 +1,41 @@
-use lettre::transport::smtp::authentication::Credentials;
-use lettre::{Message, SmtpTransport, Transport};
+// mod common;
+
+// use crate::common::email_common::send_email;
+
+// fn main() {
+//     let from = "发件人 <qwfy5287@qq.com>";
+//     let to = "收件人 <qwfy5287@gmail.com>";
+//     let subject = "刘一一_货盘有更新_01";
+//     let body = "这是一封使用 Rust lettre 库通过 QQ 邮箱发送的测试邮件";
+//     let smtp_server = "smtp.qq.com";
+//     let username = "qwfy5287@qq.com";
+//     let password = "zcflswqrjtkdbdfc";
+
+//     match send_email(from, to, subject, body, smtp_server, username, password) {
+//         Ok(_) => println!("邮件发送成功!"),
+//         Err(e) => eprintln!("无法发送邮件: {:?}", e),
+//     }
+// }
+
+
+mod common;
+
+use crate::common::email_common::send_email;
 
 fn main() {
-    let email = Message::builder()
-        .from("发件人 <qwfy5287@qq.com>".parse().unwrap())
-        .to("收件人 <qwfy5287@gmail.com>".parse().unwrap())
-        .subject("刘一一_货盘有更新")
-        .body(String::from("这是一封使用 Rust lettre 库通过 QQ 邮箱发送的测试邮件"))
-        .unwrap();
+    let from = "发件人 <qwfy5287@qq.com>";
+    let to = vec![
+        "收件人1 <qwfy5287@gmail.com>",
+        "收件人2 <719425597@qq.com>",
+    ];
+    let subject = "刘一一_货盘有更新";
+    let body = "这是一封使用 Rust lettre 库通过 QQ 邮箱发送的测试邮件";
+    let smtp_server = "smtp.qq.com";
+    let username = "qwfy5287@qq.com";
+    let password = "zcflswqrjtkdbdfc";
 
-    let creds = Credentials::new("qwfy5287@qq.com".to_string(), "zcflswqrjtkdbdfc".to_string());
-
-    // QQ 邮箱 SMTP 服务器地址
-    let mailer = SmtpTransport::relay("smtp.qq.com")
-        .unwrap()
-        .credentials(creds)
-        .build();
-
-    // 发送邮件
-    match mailer.send(&email) {
+    match send_email(from, &to, subject, body, smtp_server, username, password) {
         Ok(_) => println!("邮件发送成功!"),
-        Err(e) => panic!("无法发送邮件: {:?}", e),
+        Err(e) => eprintln!("无法发送邮件: {:?}", e),
     }
 }
