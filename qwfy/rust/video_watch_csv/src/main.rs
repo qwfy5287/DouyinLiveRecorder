@@ -6,6 +6,9 @@ use std::sync::mpsc::channel;
 use std::time::Duration;
 use std::path::PathBuf;
 
+
+use video_email::common::email_common::send_email;
+
 trait Observer {
     fn update(&self, event: &Result<notify::Event>);
 }
@@ -114,7 +117,7 @@ impl CsvObserver {
             if let Err(err) = fs::rename(new_csv_path, &new_source_path) {
                 eprintln!("Failed to rename file: {:?}", err);
             } else {
-                self.notify_new_source_file(&new_source_path);
+                self.notify_new_source_file(&new_source_path,&name);
             }
         }
     }
@@ -124,7 +127,7 @@ impl CsvObserver {
         if let Err(err) = fs::rename(new_csv_path, &source_v1_path) {
             eprintln!("Failed to rename file: {:?}", err);
         } else {
-            self.notify_new_source_file(&source_v1_path);
+            self.notify_new_source_file(&source_v1_path,&name);
         }
     }
 
@@ -140,8 +143,11 @@ impl CsvObserver {
         latest_version - 1
     }
 
-    fn notify_new_source_file(&self, path: &Path) {
-        println!("New source file generated: {}", path.display());
+    fn notify_new_source_file(&self, path: &Path, name: &str) {
+        println!("New source file generated: {}, {}", path.display(), name);
+        // send email notification
+        let subject = name.to_string() + "_货盘有更新_"+ &chrono::Local::now().format("%Y-%m-%d %H:%M:%S").to_string();
+        send_email_notification(&subject);
     }
 
     fn compare_csv_files(&self, file1: &Path, file2: &Path) -> bool {
@@ -168,6 +174,25 @@ impl CsvObserver {
 impl Observer for CsvObserver {
     fn update(&self, event: &Result<notify::Event>) {
         self.process_csv(event);
+    }
+}
+
+fn send_email_notification(subjectInner: &str) {
+    let from = "qwfy <qwfy5287@qq.com>";
+    let to = vec![
+        "收件人1 <qwfy5287@gmail.com>",
+        // "收件人2 <719425597@qq.com>",
+    ];
+    // let subject = "刘一一_货盘有更新_06";
+    let subject = subjectInner;
+    let body = "这是一封通过 QQ 邮箱发送的提醒邮件";
+    let smtp_server = "smtp.qq.com";
+    let username = "qwfy5287@qq.com";
+    let password = "zcflswqrjtkdbdfc";
+
+    match send_email(from, &to, subject, body, smtp_server, username, password) {
+        Ok(_) => println!("邮件发送成功!"),
+        Err(e) => eprintln!("无法发送邮件: {:?}", e),
     }
 }
 
