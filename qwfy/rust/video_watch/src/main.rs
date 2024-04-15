@@ -107,6 +107,14 @@ impl Observer for Mp4Observer {
                                     if duration.as_secs() > 5 {
                                         // TODO: 先不自动生成缩略图
                                         // process_video(path);
+                                    // println!("视频时长: {:?}", duration);
+
+
+                                    println!("视频路径: {:?}", path);
+                                        match copy_file_to_douyin(path.to_str().unwrap()) {
+                                            Ok(()) => println!("File copied successfully!"),
+                                            Err(e) => println!("Failed to copy file: {}", e),
+                                        }
                                     }
                                 }
                                 Err(e) => eprintln!("Error getting video duration: {:?}", e),
@@ -116,6 +124,69 @@ impl Observer for Mp4Observer {
                 }
             }
         }
+    }
+}
+
+// use std::fs;
+// // use std::path::Path;
+
+// fn copy_file_to_douyin(file_path: &str) -> Result<()> {
+//     let output_root = "/Users/qwfy/douyin-cut";
+//     // TODO:  从 file_path 中提取
+//     let dest_dir= "/Users/qwfy/douyin-cut"+"/抖音直播/@魏老板私服/@魏老板私服_2024-04-16";
+//     let file_name = Path::new(file_path).file_name().unwrap();
+//     let dest_path = Path::new(dest_dir).join(file_name);
+
+//     fs::copy(file_path, dest_path)?;
+//     Ok(())
+// }
+
+// fn main02() {
+//     let source_file = "../../../downloads/抖音直播/@魏老板私服/@魏老板私服_2024-04-16_07-28-01_013.mp4";
+//     match copy_file_to_douyin(source_file) {
+//         Ok(()) => println!("File copied successfully!"),
+//         Err(e) => println!("Failed to copy file: {}", e),
+//     }
+// }
+
+use std::fs;
+use std::path::{ PathBuf};
+
+fn copy_file_to_douyin(file_path: &str) -> Result<()> {
+    let output_root = "/Users/qwfy/douyin-cut";
+    
+    // 从 file_path 中提取目录和文件名
+    let path = Path::new(file_path);
+    let file_name = path.file_name().unwrap();
+    
+    // 从后面提取目录
+    let dest_dir = {
+        let components: Vec<_> = path.components().rev().take(2).collect();
+        let dest_dir = components.iter().rev().fold(PathBuf::new(), |acc, c| acc.join(c));
+        
+        // 根据 "_" 分割提取附加的目录层级
+        let additional_dir = file_name.to_str().unwrap().split('_').next().unwrap();
+        
+        Path::new(output_root).join(dest_dir).join(additional_dir)
+    };
+
+    println!("目标目录: {:?}", dest_dir);
+    
+    // // 创建目标目录（如果不存在）
+    // fs::create_dir_all(&dest_dir)?;
+    
+    // let dest_path = dest_dir.join(file_name);
+    // fs::copy(file_path, dest_path)?;
+    
+    Ok(())
+}
+
+fn main02() {
+    let source_file = "../../../downloads/抖音直播/@魏老板私服/@魏老板私服_2024-04-16_07-28-01_013.mp4";
+    
+    match copy_file_to_douyin(source_file) {
+        Ok(()) => println!("File copied successfully!"),
+        Err(e) => println!("Failed to copy file: {}", e),
     }
 }
 
