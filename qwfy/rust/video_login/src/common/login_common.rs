@@ -1,4 +1,4 @@
-// ./common/login_common.rs
+// qwfy/rust/video_login/src/common/login_common.rs
 
 use machine_uid::get;
 use reqwest::Client;
@@ -22,23 +22,25 @@ pub struct LoginResponse {
 }
 
 pub async fn login(phone: String, password: String) -> Result<LoginResponse, Box<dyn std::error::Error>> {
-    let client = Client::new();
-    // let login_url = "http://localhost:20248/douyin-user/login";
-    let login_url = "http://124.70.131.130/api/douyin-user/login";
-    
+    let client = Client::builder()
+        .danger_accept_invalid_certs(true)
+        .build()?;
+
+    let login_url = "https://124.70.131.130/api/douyin-user/login";
     let device_id = get().map_err(|e| format!("Failed to get device ID: {}", e))?;
-    
     let login_request = LoginRequest {
         phone,
         password,
         device_id,
     };
+
     let response = client
         .post(login_url)
         .header("Content-Type", "application/json")
         .body(serde_json::to_string(&login_request)?)
         .send()
         .await?;
+
     let login_response: LoginResponse = response.json().await?;
     Ok(login_response)
 }

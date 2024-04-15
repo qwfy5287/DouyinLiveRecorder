@@ -1034,6 +1034,9 @@ name = "video_thumb_frame"
 version = "0.1.0"
 dependencies = [
  "rayon",
+ "reqwest",
+ "serde",
+ "serde_json",
  "tokio",
  "video_login",
 ]

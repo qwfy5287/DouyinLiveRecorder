@@ -8,6 +8,13 @@ use rayon::prelude::*;
 use video_login::common::login_common::{login, handle_login_result};
 
 
+mod common;
+mod api;
+
+use crate::common::douyin_image_common::generate_douyin_image_info_vec;
+use crate::api::douyin_image::douyin_image_create;
+
+
 fn seconds_to_timestamp(seconds: u64) -> String {
     format!(
         "{:02}_{:02}_{:02}",
@@ -96,7 +103,23 @@ fn process_video(video_path: &str, output_dir: &str, interval: f64) {
             Ok(duration) => {
                 let timestamps = generate_timestamps(duration, interval);
                 match extract_frames(video_path, output_dir, &timestamps) {
-                    Ok(_) => println!("Frames extracted successfully for: {}", video_path),
+                    Ok(_) =>{
+                        println!("Frames extracted successfully for: {}", video_path);
+                        println!("output_dir: {}", output_dir);
+                        
+                        if let Ok(thumbnail_info_vec) = generate_douyin_image_info_vec(output_dir, video_path) {
+                            for thumbnail_info in thumbnail_info_vec {
+                                tokio::spawn(async move {
+                                    if let Err(e) = douyin_image_create(thumbnail_info).await {
+                                        eprintln!("Error creating douyin image JSON: {}", e);
+                                    }
+                                });
+                            }
+                        } else {
+                            eprintln!("Error generating thumbnail info");
+                        }
+
+                    },
                     Err(e) => eprintln!("Error processing {}: {}", video_path, e),
                 }
             }
@@ -117,6 +140,7 @@ fn process_directory(dir_path: &str, input_root: &str, output_root: &str, interv
                         if ext == "mp4" || ext == "avi" || ext == "mov" {
                             let video_path = path.to_str().unwrap();
                             let relative_path = path.strip_prefix(input_root).unwrap();
+                            println!("relative_path: {}", relative_path.display());
                             let output_dir = format!("{}/{}_thumb", output_root, relative_path.with_extension("").to_str().unwrap());
                             process_video(video_path, &output_dir, interval);
                         }
@@ -154,6 +178,42 @@ fn sync_thumbnails_to_server(output_root: &str, server_user: &str, server_host: 
     }
 }
 
+// #[tokio::main]
+// async fn main() {
+//     let login_result = login("18250833087".to_string(), "qwfy@123!456".to_string()).await;
+//     handle_login_result(login_result);
+
+//     let args: Vec<String> = std::env::args().collect();
+
+//     let input_root = if args.len() > 1 {
+//         &args[1]
+//     } else {
+//         "/Users/qwfy/douyin-cut"
+//     };
+
+//     let output_root = if args.len() > 2 {
+//         &args[2]
+//     } else {
+//         "/Users/qwfy/douyin-thumb"
+//     };
+
+//     let interval = 30.0; // 每隔 30 秒提取一帧
+
+//     let server_user = "root";
+//     let server_host = "124.70.131.130";
+//     let server_path = "/var/www/thumb/";
+//     let server_password = "huaweiyundouyinlive@123";
+
+
+//     tokio::spawn(async move {
+//         process_directory(input_root, input_root, output_root, interval);
+//     }).await.unwrap();
+
+//     // process_directory(input_root, input_root, output_root, interval);
+//     // sync_thumbnails_to_server(output_root, server_user, server_host, server_path, server_password);
+// }
+
+
 #[tokio::main]
 async fn main() {
     let login_result = login("18250833087".to_string(), "qwfy@123!456".to_string()).await;
@@ -162,15 +222,15 @@ async fn main() {
     let args: Vec<String> = std::env::args().collect();
 
     let input_root = if args.len() > 1 {
-        &args[1]
+        args[1].clone()
     } else {
-        "/Users/qwfy/douyin-cut"
+        "/Users/qwfy/douyin-cut".to_string()
     };
 
     let output_root = if args.len() > 2 {
-        &args[2]
+        args[2].clone()
     } else {
-        "/Users/qwfy/douyin-thumb"
+        "/Users/qwfy/douyin-thumb".to_string()
     };
 
     let interval = 30.0; // 每隔 30 秒提取一帧
@@ -180,6 +240,10 @@ async fn main() {
     let server_path = "/var/www/thumb/";
     let server_password = "huaweiyundouyinlive@123";
 
-    process_directory(input_root, input_root, output_root, interval);
-    sync_thumbnails_to_server(output_root, server_user, server_host, server_path, server_password);
+    // tokio::spawn(async move {
+        process_directory(&input_root, &input_root, &output_root, interval);
+    // }).await.unwrap();
+
+    // process_directory(input_root, input_root, output_root, interval);
+    // sync_thumbnails_to_server(output_root, server_user, server_host, server_path, server_password);
 }
