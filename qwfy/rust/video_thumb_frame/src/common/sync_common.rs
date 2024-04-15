@@ -14,7 +14,7 @@ pub fn sync_thumbnails_to_server(output_root: &str, server_user: &str, server_ho
             "ssh -o StrictHostKeyChecking=no",
             // output_root,
             &(output_root.to_owned()+"/"),
-            &format!("{}@{}:{}", server_user, server_host, server_path),
+            &format!("{}@{}:{}/", server_user, server_host, server_path),
         ])
         .status()
         .expect("Failed to execute sshpass command");
