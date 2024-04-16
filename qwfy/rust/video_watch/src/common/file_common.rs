@@ -6,7 +6,6 @@ use std::fs::{self};
 use std::path::{Path, PathBuf};
 use std::time::UNIX_EPOCH;
 
-use crate::common::thumb::process_video;
 
 fn check_if_named_by_creation_time(file_path: &Path) -> Result<bool, Box<dyn Error>> {
     let metadata = fs::metadata(file_path)?;
@@ -104,7 +103,6 @@ pub fn rename_existing_files(path: &Path) -> Result<(), Box<dyn Error>> {
                                         "MP4 file renamed based on creation time: {:?}",
                                         new_path
                                     );
-                                    // process_video(&new_path);
                                 }
                                 Err(e) => {
                                     eprintln!("Error renaming file: {:?}", e);
@@ -117,4 +115,33 @@ pub fn rename_existing_files(path: &Path) -> Result<(), Box<dyn Error>> {
         }
     }
     Ok(())
+}
+
+
+pub fn copy_file_to_douyin(file_path: &str) -> Result<(), Box<dyn Error>> {
+    let output_root = "/Users/qwfy/douyin-cut";
+    // 从 file_path 中提取目录和文件名
+    let path = Path::new(file_path);
+    let file_name = path.file_name().unwrap().to_str().unwrap();
+    // 提取顶级目录名和直接父目录名
+    let top_dir = path.parent().unwrap().parent().unwrap().file_name().unwrap();
+    let parent_dir = path.parent().unwrap().file_name().unwrap();
+    // 截断文件名,只保留到日期部分
+    let truncated_file_name = &file_name[..file_name.find('_').unwrap() + 11];
+    // 创建目标目录路径
+    let dest_dir = Path::new(output_root).join(top_dir).join(parent_dir).join(truncated_file_name);
+    println!("目标目录: {:?}", dest_dir);
+    // 创建目标目录（如果不存在）
+    fs::create_dir_all(&dest_dir)?;
+    let dest_path = dest_dir.join(file_name);
+    fs::copy(file_path, dest_path)?;
+    Ok(())
+}
+
+pub fn do_copy() {
+    let source_file = "../../../downloads/抖音直播/@魏老板私服/@魏老板私服_2024-04-16_07-28-01_013.mp4";
+    match copy_file_to_douyin(source_file) {
+        Ok(()) => println!("文件复制成功！"),
+        Err(e) => println!("无法复制文件：{}", e),
+    }
 }
