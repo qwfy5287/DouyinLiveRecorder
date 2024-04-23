@@ -1220,6 +1220,7 @@ dependencies = [
  "chrono",
  "notify",
  "tokio",
+ "video_login",
  "video_thumb_frame",
 ]
 

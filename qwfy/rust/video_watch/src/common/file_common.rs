@@ -118,30 +118,72 @@ pub fn rename_existing_files(path: &Path) -> Result<(), Box<dyn Error>> {
 }
 
 
+// use std::error::Error;
+// use std::fs;
+// use std::path::Path;
+
 pub fn copy_file_to_douyin(file_path: &str) -> Result<(), Box<dyn Error>> {
     let output_root = "/Users/qwfy/douyin-cut";
+    let streamer_list = vec!["魏老板私服", "刘一一"];
+
     // 从 file_path 中提取目录和文件名
     let path = Path::new(file_path);
     let file_name = path.file_name().unwrap().to_str().unwrap();
+
     // 提取顶级目录名和直接父目录名
     let top_dir = path.parent().unwrap().parent().unwrap().file_name().unwrap();
     let parent_dir = path.parent().unwrap().file_name().unwrap();
-    // 截断文件名,只保留到日期部分
-    let truncated_file_name = &file_name[..file_name.find('_').unwrap() + 11];
+
+    // 检查文件名是否包含主播名称
+    let streamer_name = streamer_list
+        .iter()
+        .find(|&name| file_name.contains(name))
+        .map(|&name| name)
+        .unwrap_or(parent_dir.to_str().unwrap());
+    // println!("主播名称：{}",streamer_name);
+
+    // 从文件名提取日期 2024-03-25
+    let parts: Vec<&str> = file_name.split('_').collect();
+    let date = parts[parts.len() - 3];
+    // println!("日期：{}",date);
+
+
     // 创建目标目录路径
-    let dest_dir = Path::new(output_root).join(top_dir).join(parent_dir).join(truncated_file_name);
-    println!("目标目录: {:?}", dest_dir);
+    let dest_dir = Path::new(output_root)
+        .join(top_dir)
+        .join(streamer_name)
+        .join(format!("{}_{}", streamer_name, date));
+    // println!("目标目录: {:?}", dest_dir);
+
+    // 提取文件名的后面部分 2024-03-25_10-57-51_000.mp4
+    let afterFilename = format!("{}_{}_{}", parts[parts.len() - 3], parts[parts.len() - 2], parts[parts.len() - 1]);
+    // println!("文件名的后面部分为: {}", afterFilename);
+
     // 创建目标目录（如果不存在）
     fs::create_dir_all(&dest_dir)?;
-    let dest_path = dest_dir.join(file_name);
+
+    // 创建目标文件名
+    let dest_file_name = format!("{}_{}", streamer_name, afterFilename);
+    let dest_path = dest_dir.join(dest_file_name);
+    println!("{}",dest_path.display());
+
     fs::copy(file_path, dest_path)?;
+
     Ok(())
 }
 
 pub fn do_copy() {
-    let source_file = "../../../downloads/抖音直播/@魏老板私服/@魏老板私服_2024-04-16_07-28-01_013.mp4";
+    let source_file = "../../../downloads/抖音直播/@魏老板私服/@魏老板私服_2024-03-25_10-57-51_000.mp4";
+    let source_file_2 = "../../../downloads/抖音直播/刘一一(周二早上7_30分直播)/刘一一(周二早上7_30分直播)_2024-04-23_07-48-15_019.mp4";
+
     match copy_file_to_douyin(source_file) {
         Ok(()) => println!("文件复制成功！"),
         Err(e) => println!("无法复制文件：{}", e),
     }
+
+    match copy_file_to_douyin(source_file_2) {
+        Ok(()) => println!("文件复制成功！"),
+        Err(e) => println!("无法复制文件：{}", e),
+    }
 }
+
