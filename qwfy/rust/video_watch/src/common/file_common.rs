@@ -124,7 +124,7 @@ pub fn rename_existing_files(path: &Path) -> Result<(), Box<dyn Error>> {
 
 pub fn copy_file_to_douyin(file_path: &str) -> Result<(), Box<dyn Error>> {
     let output_root = "/Users/qwfy/douyin-cut";
-    let streamer_list = vec!["魏老板私服", "刘一一"];
+    let streamer_list = vec!["魏老板私服", "刘一一","Bella刘一一"];
 
     // 从 file_path 中提取目录和文件名
     let path = Path::new(file_path);
